@@ -8,8 +8,6 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker pull cyphernode/gatekeeper:v0.7-rc.1
   - docker build -t cyphernode/gatekeeper:v0.7-rc.1 .
-  - addgroup cyphernode
-  - adduser cyphernode cyphernode
  
   - docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --network cyphernodenet -v "~/cyphernode-ssl/certs:/etc/ssl/certs" -v "~/cyphernode-ssl/private:/etc/ssl/private" --env-file env.properties cyphernode/gatekeeper:v0.7-rc.1
   - docker ps -a
