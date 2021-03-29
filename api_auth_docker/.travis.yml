@@ -1,0 +1,25 @@
+language: sh
+
+services:
+  - docker
+
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker pull cyphernode/gatekeeper:latest
+  - docker build -t cyphernode/gatekeeper:latest .
+  - docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --network cyphernodenet -v "~/cyphernode-ssl/certs:/etc/ssl/certs" -v "~/cyphernode-ssl/private:/etc/ssl/private" --env-file env.properties cyphernode/gatekeeper:latest `id -u cyphernode`:`id -g cyphernode`
+  - docker ps -a
+
+script:
+  - sleep 10
+  - docker ps -a
+  - docker ps -q
+  - docker ps -q -f "health=healthy"
+ # - docker exec -it $(docker ps -q -f "health=healthy") bitcoin-cli getpeerinfo
+  
+  #-regtest generatetoaddress 101 $(bitcoin-cli -regtest getnewaddress)
+
+
+
+
+
