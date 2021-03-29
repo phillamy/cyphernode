@@ -4,6 +4,7 @@ services:
   - docker
 
 before_install:
+  - cd api_auth_docker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker pull cyphernode/gatekeeper:latest
   - docker build -t cyphernode/gatekeeper:latest .
