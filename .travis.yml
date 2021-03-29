@@ -7,7 +7,7 @@ before_install:
   - cd api_auth_docker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker pull cyphernode/gatekeeper:v0.7-rc.1
-  - docker build -t cyphernode/gatekeeper:v0.7-rc.1
+  - docker build -t cyphernode/gatekeeper:v0.7-rc.1 .
  
   - docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --network cyphernodenet -v "~/cyphernode-ssl/certs:/etc/ssl/certs" -v "~/cyphernode-ssl/private:/etc/ssl/private" --env-file env.properties cyphernode/gatekeeper:latest `id -u cyphernode`:`id -g cyphernode`
   - docker ps -a
@@ -15,11 +15,10 @@ before_install:
 script:
   - sleep 6
   - docker ps -a
+  - docker exec -it $(docker ps -q -f "health=healthy") tests.sh
   - docker ps -q
   - docker ps -q -f "health=healthy"
  # - docker exec -it $(docker ps -q -f "health=healthy") bitcoin-cli getpeerinfo
-  
-  #-regtest generatetoaddress 101 $(bitcoin-cli -regtest getnewaddress)
 
 
 
