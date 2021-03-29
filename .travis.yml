@@ -11,7 +11,7 @@ before_install:
  
   - docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 -v "/cyphernode-ssl/certs:/etc/ssl/certs" -v "/cyphernode-ssl/private:/etc/ssl/private" --env-file env.properties cyphernode/gatekeeper:v0.7-rc.1
   - docker ps -a --no-trunc
-  - dockers logs $(docker ps -a -q)
+  - docker logs $(docker ps -a -q)
 
 script:
   - sleep 6
