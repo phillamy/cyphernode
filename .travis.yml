@@ -7,9 +7,9 @@ before_install:
   - cd api_auth_docker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker pull cyphernode/gatekeeper:v0.7-rc.1
-  - docker build -t cyphernode/gatekeeper:v0.7-rc.1 .
+  - docker build -f Dockerfile-ci -t cyphernode/gatekeeper:v0.7-rc.1-ci .
  
-  - docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --env-file env.properties cyphernode/gatekeeper:v0.7-rc.1
+  - docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --env-file env.properties cyphernode/gatekeeper:v0.7-rc.1-ci
   - docker ps -a --no-trunc
   - docker logs $(docker ps -a -q)
 
