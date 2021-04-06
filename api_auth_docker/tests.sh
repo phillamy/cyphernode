@@ -12,7 +12,7 @@ test_expiration()
   # Let's test expiration: 1 second in payload, request 2 seconds later
 
   local id=${1}
-  echo "id=${id}"
+#  echo "id=${id}"
   local k
   eval k='$ukey_'$id
 

@@ -8,10 +8,13 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
   - docker pull cyphernode/gatekeeper:v0.7-rc.1
-
   - docker build -f Dockerfile-ci -t cyphernode/gatekeeper:v0.7-rc.1-ci .
- 
-  - docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --env-file env.properties cyphernode/gatekeeper:v0.7-rc.1-ci
+  - docker run -d --rm --network="bridge" --name gatekeeper -p 80:80 -p 443:443 --env-file env.properties cyphernode/gatekeeper:v0.7-rc.1-ci
+
+  - cd ../proxy_docker
+  - docker pull cyphernode/proxy:v0.7-rc.1
+  - docker build -f Dockerfile -t cyphernode/proxy:v0.7-rc.1-ci .
+  - docker run --rm -d -p 8888:8888 --network="bridge" --env-file env.properties ccyphernode/proxy:v0.7-rc.1-ci ./startproxy.sh
 
 script:
   - sleep 1
