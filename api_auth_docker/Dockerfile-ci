@@ -16,7 +16,7 @@ COPY entrypoint.sh entrypoint.sh
 COPY trace.sh /etc/nginx/conf.d/
 COPY tests.sh /etc/nginx/conf.d/
 
-RUN chmod +x /etc/nginx/conf.d/auth.sh entrypoint.sh tests.sh
+RUN chmod +x /etc/nginx/conf.d/auth.sh entrypoint.sh /etc/nginx/conf.d/tests.sh
 
 RUN touch /var/log/gatekeeper.log
 RUN chmod a+rw /var/log/gatekeeper.log
