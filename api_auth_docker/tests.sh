@@ -12,7 +12,7 @@ test_expiration()
   # Let's test expiration: 1 second in payload, request 2 seconds later
 
   local id=${1}
-#  echo "id=${id}"
+  echo "id=${id}"
   local k
   eval k='$ukey_'$id
 
@@ -25,7 +25,8 @@ test_expiration()
 
   local rc
   echo -n "  Testing expired request... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getblockinfo)
+  echo $(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/getblockinfo)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/getblockinfo)
   [ "${rc}" -ne "403" ] && return 10
 
   return 0
@@ -36,7 +37,7 @@ test_authentication()
   # Let's test authentication/signature
 
   local id=${1}
-#  echo "id=${id}"
+  echo "id=${id}"
   local k
   eval k='$ukey_'$id
 
