@@ -14,7 +14,7 @@ before_install:
   - cd ../proxy_docker
   - docker pull cyphernode/proxy:v0.7-rc.1
   - docker build -f Dockerfile -t cyphernode/proxy:v0.7-rc.1-ci .
-  - docker run --rm -d -p 8888:8888 --network="bridge" --env-file env.properties ccyphernode/proxy:v0.7-rc.1-ci ./startproxy.sh
+  - docker run --rm -d -p 8888:8888 --network="bridge" --env-file env.properties cyphernode/proxy:v0.7-rc.1-ci ./startproxy.sh
 
 script:
   - sleep 1
