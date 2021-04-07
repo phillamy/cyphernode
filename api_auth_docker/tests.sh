@@ -42,18 +42,13 @@ test_authentication()
 
   local p64=$(echo "{\"id\":\"$id\",\"exp\":$((`date +"%s"`+10))}" | base64)
   local s=$(echo -n "$h64.$p64" | openssl dgst -hmac "$k" -sha256 -r | cut -sd ' ' -f1)
-  local token="$h64.$p64.$s"
+  local token="$h64.$p64.a$s"
 
   local rc
 
-  echo -n "  Testing good signature... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getblockinfo)
-  [ "${rc}" -eq "403" ] && return 20
-
-  token="$h64.$p64.a$s"
   echo -n "  Testing bad signature... "
   rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getblockinfo)
-  [ "${rc}" -ne "403" ] && return 30
+  [ "${rc}" -ne "403" ] && return 20
 
   return 0
 }
@@ -243,9 +238,24 @@ test_authorization_internal()
   return 0
 }
 
-kapi_id="001";kapi_key="2df1eeea370eacdc5cf7e96c2d82140d1568079a5d4d87006ec8718a98883b36";kapi_groups="watcher";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
-kapi_id="003";kapi_key="b9b8d527a1a27af2ad1697db3521f883760c342fc386dbc42c4efbb1a4d5e0af";kapi_groups="watcher,spender";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
-kapi_id="005";kapi_key="6c009201b123e8c24c6b74590de28c0c96f3287e88cac9460a2173a53d73fb87";kapi_groups="watcher,spender,admin";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+#kapi_id="001";kapi_key="2df1eeea370eacdc5cf7e96c2d82140d1568079a5d4d87006ec8718a98883b36";kapi_groups="watcher";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+#kapi_id="003";kapi_key="b9b8d527a1a27af2ad1697db3521f883760c342fc386dbc42c4efbb1a4d5e0af";kapi_groups="watcher,spender";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+#kapi_id="005";kapi_key="6c009201b123e8c24c6b74590de28c0c96f3287e88cac9460a2173a53d73fb87";kapi_groups="watcher,spender,admin";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+
+#kapi_id="000";kapi_key="4d541efd9426001c5242c7ffef4689265357b8dca752eef7355f5e0d5688392c";kapi_groups="stats";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+#kapi_id="001";kapi_key="ddfe7ea257b33afd4de0f7283f01f5ea0fe34e4a91524dac0027f75d21ac8a62";kapi_groups="stats,watcher";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+#kapi_id="003";kapi_key="ee7498b5ad8977e0ee8ead9e8438a7e983ad0efe9ef37a8899d827be3f693612";kapi_groups="stats,watcher,spender";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+#kapi_id="005";kapi_key="eba5054cd215fe72c8b174861e70d6979580ae862756eb8a9a05bc3c01e069d5";kapi_groups="stats,watcher,spender,admin";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+kapi_id="000";kapi_key="eff1eeea370eacdc5cf7e96c2d82340d1568079a5d4d87006ec8788a98883b36";kapi_groups="stats";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+kapi_id="001";kapi_key="2df1eeea370eacdc5cf7e96c2d82140d1568079a5d4d87006ec8718a98883b36";kapi_groups="stats,watcher";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+kapi_id="002";kapi_key="50c5e483b80964595508f214229b014aa6c013594d57d38bcb841093a39f1d83";kapi_groups="stats,watcher";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+kapi_id="003";kapi_key="b9b8d527a1a27af2ad1697db3521f883760c342fc386dbc42c4efbb1a4d5e0af";kapi_groups="stats,watcher,spender";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+kapi_id="004";kapi_key="bb0458b705e774c0c9622efaccfe573aa30c82f62386d9435f04e9727cdc26fd";kapi_groups="stats,watcher,spender";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+kapi_id="005";kapi_key="6c009201b123e8c24c6b74590de28c0c96f3287e88cac9460a2173a53d73fb87";kapi_groups="stats,watcher,spender,admin";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+kapi_id="006";kapi_key="19e121b698014fac638f772c4ff5775a738856bf6cbdef0dc88971059c69da4b";kapi_groups="stats,watcher,spender,admin";eval ugroups_${kapi_id}=${kapi_groups};eval ukey_${kapi_id}=${kapi_key}
+
+
+
 h64=$(echo "{\"alg\":\"HS256\",\"typ\":\"JWT\"}" | base64)
 
 # Let's test expiration: 1 second in payload, request 2 seconds later
@@ -297,3 +307,5 @@ echo 'test_authorization_internal "003"'
 test_authorization_internal "003" ; rc=$? ; [ $rc -ne 0 ] && echo $rc && return $rc
 echo 'test_authorization_internal "005"'
 test_authorization_internal "005" ; rc=$? ; [ $rc -ne 0 ] && echo $rc && return $rc
+
+echo 'DONE testing OK'
