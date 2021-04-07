@@ -25,8 +25,7 @@ test_expiration()
 
   local rc
   echo -n "  Testing expired request... "
-  echo $(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/getblockinfo)
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/getblockinfo)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getblockinfo)
   [ "${rc}" -ne "403" ] && return 10
 
   return 0
@@ -48,12 +47,12 @@ test_authentication()
   local rc
 
   echo -n "  Testing good signature... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getblockinfo)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getblockinfo)
   [ "${rc}" -eq "403" ] && return 20
 
   token="$h64.$p64.a$s"
   echo -n "  Testing bad signature... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getblockinfo)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getblockinfo)
   [ "${rc}" -ne "403" ] && return 30
 
   return 0
@@ -77,47 +76,47 @@ test_authorization_watcher()
   # Watcher can:
   # watch
   echo -n "  Testing watch... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/watch)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/watch)
   [ "${rc}" -eq "403" ] && return 40
 
   # unwatch
   echo -n "  Testing unwatch... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/unwatch)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/unwatch)
   [ "${rc}" -eq "403" ] && return 50
 
   # getactivewatches
   echo -n "  Testing getactivewatches... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getactivewatches)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getactivewatches)
   [ "${rc}" -eq "403" ] && return 60
 
   # getbestblockhash
   echo -n "  Testing getbestblockhash... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getbestblockhash)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getbestblockhash)
   [ "${rc}" -eq "403" ] && return 70
 
   # getbestblockinfo
   echo -n "  Testing getbestblockinfo... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getbestblockinfo)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getbestblockinfo)
   [ "${rc}" -eq "403" ] && return 80
 
   # getblockinfo
   echo -n "  Testing getblockinfo... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getblockinfo)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getblockinfo)
   [ "${rc}" -eq "403" ] && return 90
 
   # gettransaction
   echo -n "  Testing gettransaction... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/gettransaction)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/gettransaction)
   [ "${rc}" -eq "403" ] && return 100
 
   # ln_getinfo
   echo -n "  Testing ln_getinfo... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/ln_getinfo)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/ln_getinfo)
   [ "${rc}" -eq "403" ] && return 110
 
   # ln_create_invoice
   echo -n "  Testing ln_create_invoice... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/ln_create_invoice)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/ln_create_invoice)
   [ "${rc}" -eq "403" ] && return 120
 
   return 0
@@ -143,67 +142,67 @@ test_authorization_spender()
   # Spender can do what the watcher can do, plus:
   # getbalance
   echo -n "  Testing getbalance... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getbalance)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getbalance)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 430
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 435
 
   # getnewaddress
   echo -n "  Testing getnewaddress... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/getnewaddress)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/getnewaddress)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 440
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 445
 
   # spend
   echo -n "  Testing spend... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/spend)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/spend)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 450
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 455
 
   # addtobatch
   echo -n "  Testing addtobatch... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/addtobatch)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/addtobatch)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 460
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 465
 
   # batchspend
   echo -n "  Testing batchspend... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/batchspend)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/batchspend)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 470
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 475
 
   # deriveindex
   echo -n "  Testing deriveindex... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/deriveindex)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/deriveindex)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 480
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 485
 
   # derivepubpath
   echo -n "  Testing derivepubpath... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/derivepubpath)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/derivepubpath)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 490
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 495
 
   # ln_pay
   echo -n "  Testing ln_pay... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/ln_pay)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/ln_pay)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 500
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 505
 
   # ln_newaddr
   echo -n "  Testing ln_newaddr... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/ln_newaddr)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/ln_newaddr)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 510
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 515
 
   # ots_stamp
   echo -n "  Testing ots_stamp... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/ots_stamp)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/ots_stamp)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 520
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 525
 
   # ots_getfile
   echo -n "  Testing ots_getfile... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/ots_getfile)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/ots_getfile)
   [ ${is_spender} = true ] && [ "${rc}" -eq "403" ] && return 530
   [ ${is_spender} = false ] && [ "${rc}" -ne "403" ] && return 535
 
@@ -228,17 +227,17 @@ test_authorization_internal()
   # Should be called from inside the Swarm:
   # conf
   echo -n "  Testing conf... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/conf)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/conf)
   [ "${rc}" -ne "403" ] && return 920
 
   # executecallbacks
   echo -n "  Testing executecallbacks... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/executecallbacks)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/executecallbacks)
   [ "${rc}" -ne "403" ] && return 930
 
   # ots_backoffice
   echo -n "  Testing ots_backoffice... "
-  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k https://localhost/ots_backoffice)
+  rc=$(time -f "%E" curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" -k http://localhost/v0/ots_backoffice)
   [ "${rc}" -ne "403" ] && return 940
 
   return 0
