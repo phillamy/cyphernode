@@ -7,7 +7,7 @@ before_install:
 
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-  - sh chmod u+x ./cyphernodeconf_docker/setversions.sh
+  - bash chmod u+x ./cyphernodeconf_docker/setversions.sh
 
   - echo "$GATEKEEPER_VERSION"
 
