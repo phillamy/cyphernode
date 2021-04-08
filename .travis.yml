@@ -7,9 +7,8 @@ before_install:
 
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-  - cd cyphernode_docker
-  - sh setversions.sh
-  
+  - sh ./cyphernodeconf_docker/setversions.sh
+
   - echo "$GATEKEEPER_VERSION"
 
   - docker pull cyphernode/gatekeeper:{$GATEKEEPER_VERSION}
