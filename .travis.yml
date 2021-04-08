@@ -9,6 +9,7 @@ before_install:
 
   - cd cyphernodeconf_docker
   - chmod u+x setversions.sh
+  - sh setversions.sh
   - cd ..
 
   - bash -c 'echo $GATEKEEPER_VERSION'
