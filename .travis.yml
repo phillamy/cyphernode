@@ -7,14 +7,15 @@ before_install:
 
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-  - cd /cyphernodeconf_docker
+  - cd cyphernodeconf_docker
   - chmod u+x setversions.sh
+  - cd ..
 
   - bash -c 'echo $GATEKEEPER_VERSION'
 
   - docker pull cyphernode/gatekeeper:$GATEKEEPER_VERSION
 
-  - cd /api_auth_docker
+  - cd api_auth_docker
   - docker build -f Dockerfile-ci -t cyphernode/gatekeeper:v0.7-rc.1-ci .
   - docker run -d --rm -p 80:80 --env-file env.properties cyphernode/gatekeeper:v0.7-rc.1-ci
 
