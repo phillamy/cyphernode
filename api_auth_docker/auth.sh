@@ -144,3 +144,4 @@ if [ "-${HTTP_AUTHORIZATION%% *}" = "-Bearer" ]; then
 fi
 
 echo -en "Status: 403 Forbidden\r\n\r\n"
+trace "[auth.sh] Status: 403 Forbidden\r\n\r\n"
