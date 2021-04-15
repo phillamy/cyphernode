@@ -9,7 +9,7 @@ pipeline {
             steps {
                 script {
                     // Building the Docker image
-                    dockerImage = docker.build ("registry + ":$BUILD_NUMBER, "-f Dockerfile-ci ."
+                    dockerImage = docker.build ("registry + ":$BUILD_NUMBER, "-f Dockerfile-ci .")
 
                     try {
                         dockerImage.inside() {
