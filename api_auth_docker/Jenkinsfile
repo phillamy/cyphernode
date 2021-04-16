@@ -13,7 +13,7 @@ pipeline {
                         dockerImage = docker.build (registry + "$BUILD_NUMBER", "-f Dockerfile-ci .")
 
                         try {
-                            dockerImage.inside(-d --rm -p 80:80 --env-file env.properties registry + "$BUILD_NUMBER") {
+                            dockerImage.inside("-d --rm -p 80:80 --env-file env.properties " + registry + "$BUILD_NUMBER") {
                                 // Extracting the PROJECTDIR environment variable from inside the container
                                 def PROJECTDIR = sh(script: 'echo \$PROJECTDIR', returnStdout: true).trim()
 
