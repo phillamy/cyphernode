@@ -18,7 +18,7 @@ COPY tests.sh /etc/nginx/conf.d/
 COPY keys-sample.properties /etc/nginx/conf.d/keys.properties
 COPY api-sample.properties /etc/nginx/conf.d/api.properties
 
-RUN chmod +x /etc/nginx/conf.d/auth.sh entrypoint.sh /etc/nginx/conf.d/trace.sh /etc/nginx/conf.d/tests.sh
+RUN chmod a+rx /etc/nginx/conf.d/auth.sh entrypoint.sh /etc/nginx/conf.d/trace.sh /etc/nginx/conf.d/tests.sh
 
 RUN mkdir /cnlogs
 RUN touch /cnlogs/gatekeeper.log
