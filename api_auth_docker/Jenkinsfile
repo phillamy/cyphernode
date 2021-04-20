@@ -15,7 +15,7 @@ pipeline {
                 script 
                 {
 //                    git branch: 'features/jenkins-ci', url: 'https://github.com/phillamy/cyphernode.git'
-                    git branch: "$BRANCH_NAME", url: 'https://github.com/phillamy/cyphernode.git'
+                    git branch: "$env.BRANCH_NAME", url: 'https://github.com/phillamy/cyphernode.git'
 
                     
                     dir ('api_auth_docker')
