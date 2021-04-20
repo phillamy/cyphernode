@@ -1,0 +1,42 @@
+pipeline {
+    environment {
+        // This registry is important for removing the image after the tests
+        registry = "jenkins/gatekeeper"
+    }
+    
+    agent any
+    
+    stages 
+    {
+        stage("Test")
+        {
+            steps 
+            {
+                script 
+                {
+                    git branch: 'features/travisCI', url: 'https://github.com/phillamy/cyphernode.git'
+                    
+                    dir ('api_auth_docker')
+                    {
+                        try
+                        {
+                            dockerImage = docker.build (registry + ":$BUILD_NUMBER", "-f Dockerfile-ci .")
+        
+                            container = dockerImage.run("-d --rm -p 80:80 --env-file env.properties")
+                               
+                            sh "docker exec $container.id sh /etc/nginx/conf.d/tests.sh"
+                            
+                            sh "docker stop $container.id"
+        
+                            echo 'Running tests - DONE'
+                        }
+                        finally {
+                            // Removing the docker image
+                            sh "docker rmi $registry:$BUILD_NUMBER"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
