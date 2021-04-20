@@ -14,7 +14,7 @@ pipeline {
             {
                 script 
                 {
-                    git branch: 'refs/heads/features/jenkins-ci', url: 'https://github.com/phillamy/cyphernode.git'
+                    git branch: 'features/jenkins-ci', url: 'https://github.com/phillamy/cyphernode.git'
                     
                     dir ('api_auth_docker')
                     {
