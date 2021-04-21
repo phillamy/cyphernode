@@ -14,7 +14,7 @@ pipeline {
             {
                 script 
                 {
-                    git branch: 'features/jenkins-ci', url: 'https://github.com/phillamy/cyphernode.git'
+//                    git branch: 'features/jenkins-ci', url: 'https://github.com/phillamy/cyphernode.git'
 // Not working      git branch: "$env.BRANCH_NAME", url: 'https://github.com/phillamy/cyphernode.git'
 
                     
