@@ -69,7 +69,7 @@ binfile_response_to_client()
   [ ! -r "${pathfile}" ] && echo -ne "HTTP/1.1 404 Not Found\r\n"
 
   # Small delay needed for the data to be processed correctly by peer
-  sleep 1
+  #sleep 1
 }
 
 case "${0}" in *responsetoclient.sh) response_to_client $@;; esac
