@@ -11,7 +11,7 @@ docker pull cyphernode/gatekeeper:latest
 ## Build yourself the image
 
 ```shell
-docker build -t cyphernode/gatekeeper:latest .
+docker build -t cyphernode/gatekeeper:TAG .
 ```
 
 ## Run image
@@ -19,7 +19,7 @@ docker build -t cyphernode/gatekeeper:latest .
 If you are using it independantly from the Docker stack (docker-compose.yml), you can run it like that:
 
 ```shell
-docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --network cyphernodenet -v "~/cyphernode-ssl/certs:/etc/ssl/certs" -v "~/cyphernode-ssl/private:/etc/ssl/private" --env-file env.properties cyphernode/gatekeeper:latest `id -u cyphernode`:`id -g cyphernode`
+docker run -d --rm --name gatekeeper -p 80:80 -p 443:443 --network cyphernodenet -v "$HOME/cyphernode-ssl/certs:/etc/ssl/certs" -v "$HOME/cyphernode-ssl/private:/etc/ssl/private" --env-file env.properties cyphernode/gatekeeper:latest `id -u cyphernode`:`id -g cyphernode`
 ```
 
 ## Prepare
@@ -91,7 +91,7 @@ docker build -t authapi .
 If you are using it independantly from the Docker stack (docker-compose.yml), you can run it like that:
 
 ```shell
-docker run -d --rm --name authapi -p 80:80 -p 443:443 --network cyphernodenet -v "~/cyphernode-ssl/certs:/etc/ssl/certs" -v "~/cyphernode-ssl/private:/etc/ssl/private" authapi
+docker run -d --rm --name authapi -p 80:80 -p 443:443 --network cyphernodenet -v "$HOME/cyphernode-ssl/certs:/etc/ssl/certs" -v "$HOME/cyphernode-ssl/private:/etc/ssl/private" authapi
 ```
 
 ## FYI: Bearer token
