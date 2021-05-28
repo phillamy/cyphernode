@@ -7,14 +7,16 @@
 
 NETWORK=cn-test-network
 DATETIME=`date -u +"%FT%H%MZ"`
+IMAGE=api-proxy-docker-test
+
 
 echo Setting up to test `pwd` on $DATETIME
 
 docker network create $NETWORK 
 
-docker build -f ../Dockerfile --no-cache -t proxy-docker-test ..
+docker build -f ../Dockerfile --no-cache -t $IMAGE ..
 
-docker run -p 8888:8888 -d --rm -v `pwd`/cyphernode/logs:/cnlogs -v `pwd`/cyphernode/proxy:/proxy/db --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ../env.properties proxy-docker-test `id -u`:`id -g` ./startproxy.sh
+docker run -p 8888:8888 -d --rm -v `pwd`/cyphernode/logs:/cnlogs -v `pwd`/cyphernode/proxy:/proxy/db --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ../env.properties $IMAGE `id -u`:`id -g` ./startproxy.sh
 
 #JMeter
 docker run --rm --network $NETWORK --mount type=bind,source=`pwd`,target=/test alpine/jmeter:5.4.1 -n -t /test/proxy_docker.jmx -e -l /test/results/results-$DATETIME.jtl -f -o /test/results/test-results-$DATETIME 
@@ -27,7 +29,7 @@ docker network rm $NETWORK
 
 rm -f id-file.cid
 
-echo 'Removing image proxy-docker-test'
-docker image rm proxy-docker-test
+echo 'Removing image'
+docker image rm $IMAGE
 
 echo "HTML Test and Report information for this run can be seen here: `pwd`/results/test-results-$DATETIME/index.html"
