@@ -12,7 +12,7 @@ echo Setting up to test `pwd` on $DATETIME
 
 docker network create $NETWORK 
 
-docker build -f ./Dockerfile --no-cache -t api-auth-docker-test ..
+docker build --no-cache -t api-auth-docker-test ..
 
 docker run -p 80:80 -d --rm --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ../env.properties api-auth-docker-test `id -u`:`id -g` 
 
