@@ -7,14 +7,15 @@
 
 NETWORK=cn-test-network
 DATETIME=`date -u +"%FT%H%MZ"`
+IMAGE=api-auth-docker-test
 
 echo Setting up to test `pwd` on $DATETIME
 
 docker network create $NETWORK 
 
-docker build --no-cache -t api-auth-docker-test ..
+docker build -f ./Dockerfile --no-cache -t $IMAGE ..
 
-docker run -p 80:80 -d --rm --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ../env.properties api-auth-docker-test `id -u`:`id -g` 
+docker run -p 80:80 -d --rm --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ../env.properties $IMAGE `id -u`:`id -g` 
 
 # Running test with script file
 #docker exec -it `cat id-file.cid` sh /etc/nginx/conf.d/test.sh
@@ -27,5 +28,7 @@ docker stop `cat id-file.cid`
 docker network rm $NETWORK
 
 rm -f id-file.cid
+
+docker image rm $IMAGE
 
 echo "HTML Test and Report information for this run can be seen here: `pwd`/results/test-results-$DATETIME/index.html"
