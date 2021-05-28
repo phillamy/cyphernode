@@ -1,0 +1,34 @@
+{
+  "getblockinfo - Forbidden" : {
+    "transaction" : "getblockinfo - Forbidden",
+    "sampleCount" : 1,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 135.0,
+    "medianResTime" : 135.0,
+    "minResTime" : 135.0,
+    "maxResTime" : 135.0,
+    "pct1ResTime" : 135.0,
+    "pct2ResTime" : 135.0,
+    "pct3ResTime" : 135.0,
+    "throughput" : 7.407407407407407,
+    "receivedKBytesPerSec" : 2.228009259259259,
+    "sentKBytesPerSec" : 0.9186921296296295
+  },
+  "Total" : {
+    "transaction" : "Total",
+    "sampleCount" : 1,
+    "errorCount" : 0,
+    "errorPct" : 0.0,
+    "meanResTime" : 135.0,
+    "medianResTime" : 135.0,
+    "minResTime" : 135.0,
+    "maxResTime" : 135.0,
+    "pct1ResTime" : 135.0,
+    "pct2ResTime" : 135.0,
+    "pct3ResTime" : 135.0,
+    "throughput" : 7.407407407407407,
+    "receivedKBytesPerSec" : 2.228009259259259,
+    "sentKBytesPerSec" : 0.9186921296296295
+  }
+}
