@@ -40,6 +40,14 @@ get_best_block_info() {
   return $?
 }
 
+get_network_info() {
+  trace "Entering get_network_info()..."
+
+  local data='{"method":"getnetworkinfo"}'
+  send_to_watcher_node "${data}" | jq ".result"
+  return $?
+}
+
 get_rawtransaction() {
   trace "Entering get_rawtransaction()..."
 
