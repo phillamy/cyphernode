@@ -1,0 +1,23 @@
+#Build :  docker build -f Dockerfile-JMeter-GUI --no-cache -t jmeter-gui:5.4.1 . 
+#Run : docker run --rm -p 5900:5900 --mount type=bind,source=`pwd`,target=/test jmeter-gui:5.4.1
+
+FROM debian:stable
+ENV JMETER_VERSION "5.4.1"
+ENV JMETER_HOME /opt/apache-jmeter-${JMETER_VERSION}
+ENV JMETER_BIN ${JMETER_HOME}/bin
+ENV PATH ${JMETER_BIN}:$PATH
+STOPSIGNAL SIGKILL
+
+RUN apt-get update && apt-get install -y curl x11vnc xvfb default-jre
+RUN echo "exec /opt/apache-jmeter-5.4.1/bin/jmeter -Jjmeter.laf=System -t test/proxy-bitcoin.jmx" > ~/.xinitrc && chmod +x ~/.xinitrc
+
+RUN  \
+    curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz > /tmp/jmeter.tgz \
+    && tar -xvf /tmp/jmeter.tgz -C /opt \
+    && rm /tmp/jmeter.tgz 
+
+RUN mkdir root/.vnc && x11vnc -storepasswd jmeter root/.vnc/passwd
+
+CMD ["x11vnc", "-create", "-forever", "-usepw"]
+
+EXPOSE 5900
