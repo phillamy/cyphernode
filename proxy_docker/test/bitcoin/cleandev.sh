@@ -10,6 +10,15 @@ docker stop `cat id-file.cid`
 docker stop `cat bitcoin-id-file.cid`
 docker stop `cat jmeter-id-file.cid`
 
+echo 'Removing network'
+docker network rm $NETWORK
+
 rm -f *.cid
 
-echo "Done !"
+echo 'Removing images'
+docker image rm $IMAGE
+docker image rm $BITCOIN_IMAGE
+docker image rm $JMETER_IMAGE
+
+
+echo "Clean done !"

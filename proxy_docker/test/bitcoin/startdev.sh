@@ -13,16 +13,54 @@ JMETER_IMAGE=jmeter-gui:5.4.1
 
 echo Setting up to test `pwd` on $DATETIME
 
-docker network create $NETWORK 
+create_test_network()
+{
+  local network=$(docker network ls | grep cn-test-network );
 
-#Build proxy
-docker build -f ../../Dockerfile --no-cache -t $IMAGE ../..
+  if [[ ! $network =~ 'cn-test-network' ]]; then
+    docker network create $NETWORK
+  else
+    echo "Network found"
+  fi    
+} 
 
-#Build bitcoin
-docker build --no-cache --build-arg ARCH=x86_64 -t $BITCOIN_IMAGE ../../../../dockers/bitcoin-core
+build_proxy()
+{
+  local image=$(docker image ls | grep api-proxy-docker-test );
 
-#Build JMeter GUI
-docker build -f Dockerfile-JMeter-GUI --no-cache -t $JMETER_IMAGE . 
+  if [[ ! $image =~ 'api-proxy-docker-test' ]]; then
+    docker build -f ../../Dockerfile --no-cache -t $IMAGE ../..
+  else
+    echo "Proxy image found"
+  fi
+}
+
+build_bitcoin()
+{
+  local image=$(docker image ls | grep api-bitcoin-test );
+
+  if [[ ! $image =~ 'api-bitcoin-test' ]]; then
+    docker build --no-cache --build-arg ARCH=x86_64 -t $BITCOIN_IMAGE ../../../../dockers/bitcoin-core
+  else
+    echo "Bitcoin core image found"
+  fi
+}
+
+build_jmeter()
+{
+  local image=$(docker image ls | grep jmeter-gui);
+
+  if [[ ! $image =~ 'jmeter-gui' ]]; then
+    docker build -f Dockerfile-JMeter-GUI --no-cache -t $JMETER_IMAGE . 
+  else
+    echo "JMeter image found"
+  fi
+}
+
+create_test_network
+build_proxy
+build_bitcoin
+build_jmeter
 
 #Run proxy
 docker run -p 8888:8888 -d --rm -v `pwd`/../cyphernode/logs:/cnlogs -v `pwd`/../cyphernode/proxy:/proxy/db --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ./env.properties $IMAGE `id -u`:`id -g` ./startproxy.sh
