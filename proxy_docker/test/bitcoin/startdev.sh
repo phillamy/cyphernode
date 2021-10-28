@@ -63,7 +63,7 @@ build_bitcoin
 build_jmeter
 
 #Run proxy
-docker run -p 8888:8888 -d --rm -v `pwd`/../cyphernode/logs:/cnlogs -v `pwd`/../cyphernode/proxy:/proxy/db --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ./env.properties $IMAGE `id -u`:`id -g` ./startproxy.sh
+docker run -d --rm -v `pwd`/../cyphernode/logs:/cnlogs -v `pwd`/../cyphernode/proxy:/proxy/db --network $NETWORK --name cn-test --cidfile=id-file.cid --env-file ./env.properties $IMAGE `id -u`:`id -g` ./startproxy.sh
 
 #Run bitcoind
 docker run -d --rm --cidfile=bitcoin-id-file.cid --network $NETWORK --name bitcoin --mount type=bind,source=`pwd`,target=/.bitcoin $BITCOIN_IMAGE `id -u`:`id -g` bitcoind
