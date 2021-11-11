@@ -506,30 +506,38 @@ install_docker() {
         copy_file $cyphernodeconf_filepath/bitcoin/bitcoin-client.conf $BITCOIN_DATAPATH/bitcoin-client.conf 1 $SUDO_REQUIRED
       fi
     fi
+
+    copy_file $cyphernodeconf_filepath/bitcoin/entrypoint.sh $BITCOIN_DATAPATH/entrypoint.sh 1 $SUDO_REQUIRED
+    copy_file $cyphernodeconf_filepath/bitcoin/createWallets.sh $BITCOIN_DATAPATH/createWallets.sh 1 $SUDO_REQUIRED
+
+    if [[ ! -x $BITCOIN_DATAPATH/entrypoint.sh ]]; then
+      step "     [32mmake[0m entrypoint.sh executable"
+      sudo_if_required chmod +x $BITCOIN_DATAPATH/entrypoint.sh
+      next
+    fi
+    if [[ ! -x $BITCOIN_DATAPATH/createWallets.sh ]]; then
+      step "     [32mmake[0m createWallets.sh executable"
+      sudo_if_required chmod +x $BITCOIN_DATAPATH/createWallets.sh
+      next
+    fi
   fi
 
   if [[ $FEATURE_LIGHTNING == true ]]; then
     if [[ $LIGHTNING_IMPLEMENTATION == "c-lightning" ]]; then
-        local dockerfile="Dockerfile"
-        if [[ $archpath == "rpi" ]]; then
-          dockerfile="Dockerfile-alpine"
-        fi
+      if [ ! -d $LIGHTNING_DATAPATH/bitcoin ]; then
+        step "   [32mcreate[0m $LIGHTNING_DATAPATH"
+        sudo_if_required mkdir -p $LIGHTNING_DATAPATH/bitcoin
+        next
+      fi
 
-        if [ ! -d $LIGHTNING_DATAPATH/bitcoin ]; then
-          step "   [32mcreate[0m $LIGHTNING_DATAPATH"
-          sudo_if_required mkdir -p $LIGHTNING_DATAPATH/bitcoin
-          next
-        fi
+      copy_file $cyphernodeconf_filepath/lightning/c-lightning/config $LIGHTNING_DATAPATH/config 1 $SUDO_REQUIRED
+      copy_file $cyphernodeconf_filepath/lightning/c-lightning/entrypoint.sh $LIGHTNING_DATAPATH/bitcoin/entrypoint.sh 1 $SUDO_REQUIRED
 
-        copy_file $cyphernodeconf_filepath/lightning/c-lightning/config $LIGHTNING_DATAPATH/config 1 $SUDO_REQUIRED
-        copy_file $cyphernodeconf_filepath/lightning/c-lightning/entrypoint.sh $LIGHTNING_DATAPATH/bitcoin/entrypoint.sh 1 $SUDO_REQUIRED
-
-        if [[ ! -x $LIGHTNING_DATAPATH/bitcoin/entrypoint.sh ]]; then
-          step "     [32mmake[0m entrypoint.sh executable"
-          sudo_if_required chmod +x $LIGHTNING_DATAPATH/bitcoin/entrypoint.sh
-          next
-        fi
-
+      if [[ ! -x $LIGHTNING_DATAPATH/bitcoin/entrypoint.sh ]]; then
+        step "     [32mmake[0m entrypoint.sh executable"
+        sudo_if_required chmod +x $LIGHTNING_DATAPATH/bitcoin/entrypoint.sh
+        next
+      fi
     fi
   fi
 
@@ -544,10 +552,24 @@ install_docker() {
   docker swarm join-token worker > /dev/null 2>&1
   local noSwarm=$?;
 
-  if [[ $DOCKER_MODE == 'swarm' && $noSwarm == 1 ]]; then
-    step "     [32minit[0m docker swarm"
-    try docker swarm init --task-history-limit 1 > /dev/null 2>&1
-    next
+  if [[ $DOCKER_MODE == 'swarm' ]]; then
+    if [[ $noSwarm == 1 ]]; then
+      step "     [32minit[0m docker swarm"
+      try docker swarm init --task-history-limit 1 > /dev/null 2>&1
+      next
+    fi
+
+    local localnodeid
+    localnodeid=$(docker info -f '{{.Swarm.NodeID}}')
+
+    # we only support swarm in single host mode, so all labels needed to spawn containers in the swarm
+    # are given to the host setup is run on. Setup must be run on any manager, if swarm mode is enabled
+    # and a swarm was already initialised
+    if [[ $(docker node inspect ${localnodeid} --format '{{ index .Spec.Labels "io.cyphernode" }}') != "true" ]]; then
+      step "      [32madd[0m docker node label io.cyphernode"
+      try docker node update --label-add io.cyphernode=true ${localnodeid} > /dev/null 2>&1
+      next
+    fi
   fi
 
   local net_entry=$(docker network ls | grep cyphernodenet);
@@ -827,19 +849,19 @@ ALWAYSYES=0
 SUDO_REQUIRED=0
 AUTOSTART=0
 
-# CYPHERNODE VERSION "v0.6.0"
-SETUP_VERSION="v0.6.0"
-CONF_VERSION="v0.6.0"
-GATEKEEPER_VERSION="v0.6.0"
-TOR_VERSION="v0.6.0"
-PROXY_VERSION="v0.6.0"
-NOTIFIER_VERSION="v0.6.0"
-PROXYCRON_VERSION="v0.6.0"
-OTSCLIENT_VERSION="v0.6.0"
-PYCOIN_VERSION="v0.6.0"
-CYPHERAPPS_VERSION="v0.6.0"
-BITCOIN_VERSION="v0.20.1"
-LIGHTNING_VERSION="v0.9.1"
+# CYPHERNODE VERSION "v0.7.0"
+SETUP_VERSION="v0.7.0"
+CONF_VERSION="v0.7.0"
+GATEKEEPER_VERSION="v0.7.0"
+TOR_VERSION="v0.7.0"
+PROXY_VERSION="v0.7.0"
+NOTIFIER_VERSION="v0.7.0"
+PROXYCRON_VERSION="v0.7.0"
+OTSCLIENT_VERSION="v0.7.0"
+PYCOIN_VERSION="v0.7.0"
+CYPHERAPPS_VERSION="v0.7.0"
+BITCOIN_VERSION="v0.21.1"
+LIGHTNING_VERSION="v0.10.0"
 TRAEFIK_VERSION="v1.7.9-alpine"
 MOSQUITTO_VERSION="1.6"
 

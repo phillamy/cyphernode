@@ -128,8 +128,8 @@ checktor() {
   echo -en "\r\n\e[1;36mTesting Tor... " > /dev/console
   local rc
 
-  rc=$(curl -s -o /dev/null -w "%{http_code}" --socks5-hostname tor:9050 http://expyuzz4wqqyqhjn.onion/)
-  [ "${rc}" -ne "200" ] && return 250
+  curl -s --socks5-hostname tor:9050 https://check.torproject.org/ | cat | grep -qm 1 Congratulations
+  [ "$?" -ne "0" ] && return 250
 
   echo -e "\e[1;36mTor rocks!" > /dev/console
 
