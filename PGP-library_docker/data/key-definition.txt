@@ -1,0 +1,11 @@
+%echo Generating a default key
+Key-Type: default
+Subkey-Type: default
+Name-Real: Cypher Node
+Name-Comment: with stupid passphrase
+Name-Email: cn@foo.bar
+Expire-Date: 0
+%no-protection
+# Do a commit here, Perform the key generation 
+%commit
+%echo done
