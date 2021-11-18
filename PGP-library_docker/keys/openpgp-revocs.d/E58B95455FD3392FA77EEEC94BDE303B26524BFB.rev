@@ -1,7 +1,7 @@
 This is a revocation certificate for the OpenPGP key:
 
-pub   rsa3072 2021-11-17 [SC]
-      FB8B994D0F7E61BCCB8CEC7E28746D2AAD404EF3
+pub   rsa3072 2021-11-18 [SC]
+      E58B95455FD3392FA77EEEC94BDE303B26524BFB
 uid          Cypher Node (with stupid passphrase) <cn@foo.bar>
 
 A revocation certificate is a kind of "kill switch" to publicly
@@ -21,15 +21,15 @@ before importing and publishing this revocation certificate.
 :-----BEGIN PGP PUBLIC KEY BLOCK-----
 Comment: This is a revocation certificate
 
-iQG2BCABCAAgFiEE+4uZTQ9+YbzLjOx+KHRtKq1ATvMFAmGVcNgCHQAACgkQKHRt
-Kq1ATvOSKQv/ZeicDX1hqXB28+/1wrYeZLXkTthKQyCGP+v+9J5NVXhoh7w55FK7
-bosVk/0v9saiMKEbBAM3ezDrG1gf6MkOhTTWvTUTQFzQjrjrNOgQzTE2XBhz2CqL
-uY+yixyR0Upj/ATT4EbPq5sTyZdFJ/OSIJhbGgZ6zibZzqoZqmnf6n7sNFBgWaiH
-CdAWKkfqQp2JY9prfpKHZMsQZTfXoKSmxFVl7uRzejxMHP9jQ8esa1/reNFBt8nW
-saBvklWOiBrGgC5vrnotM2og4DDkWQciZc3Okfbbny+3VDGw8R9nM1RqleLB5npl
-FlPsl3tZvopYmnAMpSpLAUzbxmbkZNFeUb+MgrVCcuUQSYweFN+7R+utp5ZPJYSp
-rhbqTzTBqF6eiMA8jik3yeni/ND7PsVncVjMTloDe7f3Y+7G3g2HjhXM6BqFMYLx
-vxBDYwvuJm+NO+Nx8zjsHArkkrN2Oqz8LzG5yJcN01y44FDEmpNbiwxWdWb8o2Vv
-WqflzGe3PEh0
-=AHVA
+iQG2BCABCAAgFiEE5YuVRV/TOS+nfu7JS94wOyZSS/sFAmGWZpMCHQAACgkQS94w
+OyZSS/sytwv+JYu4u94YMNPmjsaQujIzg0wFf0TjY3/JiMMeQTvm4uz8vv86Epdh
+nRV0WHFAUUAjjuKUHb7k9a/jnZ2vq8cmo8QmCrDNZrsfRr/c5tqZV1y6WeVv2UyI
+ZgUEBukF25RfEgtrYg4KAuBGENcCsv3oSElIUX1MjdydeZskYYhAjh0e8to9FKPW
+JCVs81VLTtZXe5du9CXcNpy63I75wymjPADDGKa0KLFVyFscnHNEa33YLX3eJA1Y
+wsZhCe3wiRa6NdluqZR/1kO1qWUtRspQmVH04weiV8TVbdIVyawGqm0r97he+Gfo
+/+mHC2f2mCT41JQiGQxJpH5BOIWiFpKCbbDMzLsDidovAijpWw2BD3H/Dml6gzAY
+2Ci3DQTB3NAYIKxBnFlmg0jhRgRsxgFCqSebVZiNA46fOzNmdSAFO0fsV3gV+yDK
+y9AtMi6O0i3629iYjWpedHCLFlYCs4oOnUu4pgGkwfi1Gqwf158RQbkQmuhCSqRO
+QRGRvFekHiEM
+=LVuG
 -----END PGP PUBLIC KEY BLOCK-----

@@ -2,7 +2,7 @@
 
 . ./trace.sh
 . ./process_msg.sh
-#. ./response.sh
+. ./response.sh
 
 main() {
   trace "Entering main()..."
@@ -15,6 +15,7 @@ main() {
   local cmd
   local response
   local response_topic
+  local prev_msg
 
   # Messages should have this form:
   # {"response-topic":"response/5541","cmd":"sign","body":"text-to-sign"}
@@ -29,8 +30,13 @@ main() {
     trace "[main] response_topic=${response_topic}"
 
     case "${cmd}" in
-      sign)
-        response=$(process_msg "${msg}")
+      clearsign)
+        response=$(process_clearsign "${msg}")
+        publish_response "${response}" "${response_topic}" ${?}
+        ;;
+      verifyclearsign)
+        response=$(process_verifyclearsign "${msg}")
+        publish_response "${response}" "${response_topic}" ${?}
         ;;
     esac
     trace "[main] msg processed"

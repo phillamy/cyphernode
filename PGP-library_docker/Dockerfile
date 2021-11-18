@@ -9,14 +9,13 @@ WORKDIR ${HOME}
 
 
 COPY scripts/* ./
-RUN chmod +x gen-key.sh list-key.sh startgpg.sh requesthandler.sh process_msg.sh
+RUN chmod +x gen-key.sh startgpg.sh requesthandler.sh process_msg.sh
 
 ENV GNUPGHOME=/.gnupgp
 
 
 ENTRYPOINT ["su-exec"]
 
+# docker run --rm -v `pwd`/data/:/data -v `pwd`/keys:/.gnupgp -v `pwd`/../dist/cyphernode/logs:/cnlogs -e GPG_TTY=/dev/console --network cyphernodenet --user root --name cn-pgp pgp-mosquitto:1.0 `id -u`:`id -g` ./startgpg.sh
+
 # docker build --no-cache -t pgp-mosquitto:1.0 . 
-# docker run --rm -it --network cyphernodenet --name cn-pgp pgp-server
-# docker run --rm -it -v `pwd`/data:/pgp/.gnupgp --network cyphernodenet --name cn-pgp pgp-mosquitto:1.0 `id -u`:`id -g` ./gen-key.sh
-# docker run --rm -it -v `pwd`/data:/pgp/.gnupgp --network cyphernodenet --name cn-pgp pgp-mosquitto:1.0 `id -u`:`id -g` ./startgpg.sh
