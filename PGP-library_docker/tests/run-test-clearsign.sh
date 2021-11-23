@@ -1,4 +1,4 @@
 #!/bin/sh
 
 docker run --rm -it -v `pwd`/test-clearsign.sh:/test-clearsign.sh \
---network cyphernodenet eclipse-mosquitto:1.6-openssl /test-clearsign.sh
+--network cyphernodenet gpg-test:1.0 `id -u`:`id -g` /test-clearsign.sh

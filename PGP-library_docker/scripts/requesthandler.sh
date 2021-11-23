@@ -38,6 +38,14 @@ main() {
         response=$(process_verifyclearsign "${msg}")
         publish_response "${response}" "${response_topic}" ${?}
         ;;
+      detachsign)
+        response=$(process_detachsign "${msg}")
+        publish_response "${response}" "${response_topic}" ${?}
+        ;;
+      verifydetachsign)
+        response=$(process_verifydetachsign "${msg}")
+        publish_response "${response}" "${response_topic}" ${?}
+        ;;
     esac
     trace "[main] msg processed"
   done

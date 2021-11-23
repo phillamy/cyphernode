@@ -14,8 +14,9 @@ publish_response() {
   trace "[publish_response] returncode=${returncode}"
 
   trace "[publish_response] mosquitto_pub -h broker -t \"${response_topic}\" -m \"${response}\""
+  response=$(echo ${response} | base64 -w 0)
   mosquitto_pub -h broker -t "${response_topic}" -m "${response}"
-  returncode=$?
+
   trace_rc ${returncode}
 
   return ${returncode}

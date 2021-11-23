@@ -2,10 +2,10 @@
 Key-Type: default
 Subkey-Type: default
 Name-Real: Cypher Node
-Name-Comment: with stupid passphrase
-Name-Email: cn@foo.bar
+Name-Comment: Cyphernode is a Free open-source alternative to hosted services and commercial Bitcoin APIs
+Name-Email: cn@no-email.xx
 Expire-Date: 0
-Passphrase: abc-123
+%no-protection
 # Do a commit here, Perform the key generation 
 %commit
 %echo done

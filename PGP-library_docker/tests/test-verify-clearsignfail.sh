@@ -1,10 +1,10 @@
 #!/bin/sh
 
-checkverifyclearsign() {
-  echo -en "\r\n\e[1;36mTesting Verify clearsign... " > /dev/console
+checkverifyclearsignfail() {
+  echo -en "\r\n\e[1;36mTesting Verify clearsign FAIL... " > /dev/console
   local response
   local returncode
-  local pgp_signed=`cat tests/test-data-clear-signed.txt`
+  local pgp_signed=`cat tests/test-data-clear-signed-failed.txt`
 
 
   local body=$(echo "${pgp_signed}" | base64 -w 0)
@@ -16,14 +16,14 @@ checkverifyclearsign() {
 
   response=$(echo ${response} | base64 -d)
 
-  echo "Response: ${response}"
-
   return_code=$(echo "${response}" | jq -r ".return_code")
-  [ "${return_code}" -ne "0" ] && return 116
+  [ "${return_code}" -eq "0" ] && return 116
 
-  echo -e "\e[1;36mGPG Verify clearsign rocks!" > /dev/console
+  echo "Response: ${response}"
+  echo -e "\e[1;36mGPG Verify clearsign fail rocks!" > /dev/console
 
+ 
   return 0
 }
 
-checkverifyclearsign
+checkverifyclearsignfail

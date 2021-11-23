@@ -2,7 +2,7 @@
 #!/bin/sh
 
 checkclearsign() {
-  echo -en "\r\n\e[1;36mTesting Signature... " > /dev/console
+  echo -en "\r\n\e[1;36mTesting Signature [clear sign]... " > /dev/console
   local response
   local returncode
   local body=$(echo "Hello world in GPG at `date -u +"%FT%H%MZ"`" | base64)
@@ -12,7 +12,10 @@ checkclearsign() {
   [ "${returncode}" -ne "0" ] && return 115
 
   echo "Response: ${response}"
-  echo -e "\e[1;36mGPG Signature rocks!" > /dev/console
+
+
+  
+  echo -e "\e[1;36mGPG clear sign rocks!" > /dev/console
 
   return 0
 }
