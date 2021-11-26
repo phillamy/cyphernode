@@ -4,7 +4,8 @@ checkverifyclearsignfail() {
   echo -en "\r\n\e[1;36mTesting Verify clearsign FAIL... " > /dev/console
   local response
   local returncode
-  local pgp_signed=`cat tests/test-data-clear-signed-failed.txt`
+  local pgp_signed=`cat tests/data/test-data-clear-signed-failed.txt`
+  local document
 
 
   local body=$(echo "${pgp_signed}" | base64 -w 0)
@@ -14,14 +15,19 @@ checkverifyclearsignfail() {
   returncode=$?
   [ "${returncode}" -ne "0" ] && return 115
 
-  response=$(echo ${response} | base64 -d)
-
-  return_code=$(echo "${response}" | jq -r ".return_code")
-  [ "${return_code}" -eq "0" ] && return 116
-
   echo "Response: ${response}"
-  echo -e "\e[1;36mGPG Verify clearsign fail rocks!" > /dev/console
 
+  returncode=$(echo "${response}" | jq -r '.return_code')
+  echo "Returncode: ${returncode}"
+
+  [ ${returncode} -ne "0" ] && return 116
+
+  body=$(echo "${response}" | jq -r '.body')
+  echo "Body: ${body}"
+  document=$(echo "${body}" | base64 -d)
+
+  echo "DecodedBody: >${document}<"
+  echo -e "\e[1;36mGPG Verify clearsign fail rocks!" > /dev/console
  
   return 0
 }

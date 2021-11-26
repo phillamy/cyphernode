@@ -2617,6 +2617,84 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponseTemporarilyUnavailable'
+  /gpg_clearsign:
+    post:
+      tags:
+        - "document"
+      summary: "Clear signs the document. This option is meant to be used with ASCII (text) input data"
+      description: "Clear signs the document to be wrapped in an ASCII-armored signature but otherwise does not modify the document."
+      operationId: "gpgClearsign"
+      requestBody:
+        description: "JSON object containing the document to clear sign"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                document:
+                  type: string
+      responses:
+        '200':
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+              properties:
+                description: The clearsigend document
+                example: \{"return_code":"0","body":"-----BEGIN PGP SIGNED MESSAGE----- Hash':' SHA256 'Unit testing gpg_clearsign at 2021-11-24T2002Z' -----BEGIN PGP SIGNATURE----- iQGzBAEBCAAdFiEEXWNFWuqOJiDI+K5grEtB+lyCcVUFAmGemkYACgkQrEtB+lyC cVXAtQwAs+WsQQLLDutK7hccAc5xiKCE37RcZV9/hzAOdt/wzgi2ZLHfAbyU0C2r gMVObz2Aw5qZUwMkR5xrDUy6GO7Uo28vHv4VSucCuBJzzQYG3nvPtvdMOcWahP+E l8x8CP90vwy1uLzVnYgZGS2p9w9Bc+LN5E9Coqhgz2RquYHYWdxhFG9nU5bzxFRm j0XUVSiMp6RCEOq7j5u5ucfRIqswjDHHZ8T8qRp7vCk3XrkOEcKhNbRVcnyeg/HU FyiD8u33UVQ4flWaBE+0c2xRJEzIN50aYZOiwdY9mETx9E3NNeZfJFr4CsPANDH+ Fgt5BESF+D0GtYfiCFgcbgea6lpNLew0UN6EJ5IFSYE1ULz0uMNXfGtma6I/zK06 P5GcMZky2oa8ryr0IC/H3XjGgKK6b7403HXF82NzQpD33HLLAC+Ney3+7k3Kezgv WgWLJ2k0yyPJIewyvSqgaLhgX5oupLrJEQ68OIin7jeTwFhc6Nr/Iev9Xj+cwTxX 4tL+LBBa =2Prg -----END PGP SIGNATURE-----"}
+                return_code:
+                  type: "integer"
+                body:
+                  type: string
+        '403':
+          $ref: '#/components/schemas/ApiResponseNotAllowed'
+        '503':
+          description: "Resource temporarily unavailable"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseTemporarilyUnavailable'
+  /gpg_detachsign:
+    post:
+      tags:
+        - "document"
+      summary: "Detach signs the document"
+      description: "Detach signs the document and returns an ASCII-armor signature. Does not modify the document."
+      operationId: "gpgDetachsign"
+      requestBody:
+        description: "JSON object containing the document to detach sign"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                document:
+                  type: "string"
+      responses:
+        '200':
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "object"
+              properties:
+                description: The signature in ASCII-armor format
+                example: \{"return_code":"0","body":"-----BEGIN PGP SIGNATURE----- iQGzBAABCAAdFiEEXWNFWuqOJiDI+K5grEtB+lyCcVUFAmGemkYACgkQrEtB+lyC cVVYZgv9EXlNXcQoRYzdkZ3xsTTcaJbNgzsZC94gAZr1GPf6QpkKRp2EzIcCt4eG Irk5Zs4VDy+8yh2X1f2j3eq+EYHTNhfu84RLbLDf4dUp/yIfSdQZ0FD2eibk2DQL 9s86L51sTvLHmcjMxhcCXT4yqYSfbAffpnRPca9SR3kwu/LYr8UamLZb9xZ+lRC2 bzKHBLvOHzpTnMhVsD9tPh0wRXXuXIcoM2MlA4EkP7/85IzXwIkgjRT/H9k4O5iI oe1QwA9dhnKH+RImdqyLQNEYLp5YJBM6IzgoYUCXm+Ki2epPVUOdyzqfmxs36bKa nqoVQ05kkVwe6ROYbqCgY/qXCa+aXLoROAv6pcLvyhuCGeqgXBnAJsleCwoqvRGn vNgIcang2dtYxguqh0stZVF6iynf4b8unaCJUUDgJeBtyWRoh0451VEdKhV+rKn0 pcoArWTCbX9ona9XiroYh6F5ielI+GucEDethwiXUQF63ApykX6fIKe+W8uZd7p0 ZM5HU+Zz =gHxR -----END PGP SIGNATURE-----"}
+                return_code:
+                  type: "integer"
+                body:
+                  type: "string"
+        '403':
+          $ref: '#/components/schemas/ApiResponseNotAllowed'
+        '503':
+          description: "Resource temporarily unavailable"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseTemporarilyUnavailable'
 components:
   schemas:
     WatchedAddress:

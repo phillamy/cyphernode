@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 . ./trace.sh
@@ -17,22 +16,26 @@ process_clearsign(){
   local body
   local response
   local returncode
+  local b64response
+  local message
 
   trace "[process_clearsign] msg=${msg}"
   body=$(echo ${msg} | jq -e ".body" | base64 -d)
   
   trace "[process_clearsign] body=${body}"
 
- # response=$(echo \"${body}\" | gpg --batch --pinentry-mode loopback --passphrase-file ./data/passphrase.txt --clear-sign  2>&1)
-  response=$(echo \"${body}\" | gpg --clear-sign 2>&1 | sed "s/\"/'/g")
+  response=$(echo "${body}" | gpg --clear-sign 2>&1 )
   returncode=$?
-
-  trace "[process_clearsign] gpg response=${response}"
 
   trace_rc ${returncode}
 
-  response="{\"return_code\":\"${returncode}\",\"body\":\"${response}\"}"
-  echo "${response}"
+  trace "[process_clearsign] gpg response=${response}"
+
+  b64response=$(echo "${response}" | base64 -w 0)
+
+  message="{\"return_code\":\"${returncode}\",\"body\":\"${b64response}\"}"
+
+  echo "${message}"
 
   return ${returncode}
 }
@@ -44,24 +47,28 @@ process_verifyclearsign(){
   local body
   local response
   local returncode
+  local b64response
+  local message
 
   trace "[process_verifyclearsign] msg=${msg}"
-  body=$(echo ${msg} | jq -e ".body" | base64 -d)
+  body=$(echo "${msg}" | jq -e ".body" | base64 -d)
   
   trace "[process_verifyclearsign] body=${body}"
 
-  response=$(echo "${body}" | gpg --verify 2>&1 | sed "s/\"/'/g")
+  response=$(echo "${body}" | gpg --verify 2>&1)
 
   #Grep 'gpg: Good signature from ' because de rc is 0 most of the time
-  echo "${response}" | grep 'gpg: Good signature from '
+  echo ${response} | grep -q 'gpg: Good signature from '
   returncode=$?
 
   trace "[process_verifyclearsign] gpg response=${response}"
 
   trace_rc ${returncode}
 
-  response="{\"return_code\":\"${returncode}\",\"body\":\"${response}\"}"
-  echo "${response}"
+  b64response=$(echo "${response}" | base64 -w 0)
+
+  message="{\"return_code\":\"${returncode}\",\"body\":\"${b64response}\"}"
+  echo "${message}"
 
   return ${returncode}
 }
@@ -73,21 +80,26 @@ process_detachsign(){
   local body
   local response
   local returncode
+  local b64response
+  local message
 
   trace "[process_detachsign] msg=${msg}"
-  body=$(echo ${msg} | jq -e ".body" | base64 -d)
+  body=$(echo "${msg}" | jq -e ".body" | base64 -d)
   
   trace "[process_detachsign] body=${body}"
 
-  response=$(echo "${body}" | gpg --detach-sig --armor 2>&1 | sed "s/\"/'/g")
+  response=$(echo "${body}" | gpg --detach-sig --armor 2>&1)
   returncode=$?
 
   trace "[process_detachsign] gpg response=${response}"
 
   trace_rc ${returncode}
 
-  response="{\"return_code\":\"${returncode}\",\"body\":\"${response}\"}"
-  echo "${response}"
+  b64response=$(echo "${response}" | base64 -w 0)
+
+  message="{\"return_code\":\"${returncode}\",\"body\":\"${b64response}\"}"
+
+  echo "${message}"
 
   return ${returncode}
 }
@@ -104,9 +116,11 @@ process_verifydetachsign(){
   local returncode
   local original_message
   local temp_FILENAME=$(mktemp)
+  local b64response
+  local message
 
   trace "[process_verifydetachsign] msg=${msg}"
-  body=$(echo ${msg} | jq -e ".body" | base64 -d)
+  body=$(echo "${msg}" | jq -e ".body" | base64 -d)
   original_message=$(echo ${msg} | jq -e ".original_message" | base64 -d)
 
   trace "[process_verifydetachsign] body=${body}"
@@ -114,17 +128,22 @@ process_verifydetachsign(){
 
   echo "${original_message}" > "${temp_FILENAME}"
 
-  response=$(echo "${body}" | gpg --batch --armor --verify - ${temp_FILENAME} 2>&1 | sed "s/\"/'/g")
-  returncode=$?
-
+  response=$(echo "${body}" | gpg --armor --verify - ${temp_FILENAME} 2>&1)
   rm -f ${temp_FILENAME}
+
+  #Grep 'gpg: Good signature from ' because de rc is 0 most of the time
+  echo ${response} | grep -q 'gpg: Good signature from '
+  returncode=$?
 
   trace "[process_verifydetachsign] gpg response=${response}"
 
   trace_rc ${returncode}
 
-  response="{\"return_code\":\"${returncode}\",\"body\":\"${response}\"}"
-  echo "${response}"
+  b64response=$(echo "${response}" | base64 -w 0)
+
+  message="{\"return_code\":\"${returncode}\",\"body\":\"${b64response}\"}"
+
+  echo "${message}"
 
   return ${returncode}
 }

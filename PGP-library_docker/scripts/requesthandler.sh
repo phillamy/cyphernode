@@ -46,6 +46,10 @@ main() {
         response=$(process_verifydetachsign "${msg}")
         publish_response "${response}" "${response_topic}" ${?}
         ;;
+       *)
+        response='{"error": {"code": -32602, "message": "Method not found"}, "id": "1"}'
+        returncode=1
+        ;;
     esac
     trace "[main] msg processed"
   done

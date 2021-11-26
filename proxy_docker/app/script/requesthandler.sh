@@ -21,6 +21,7 @@
 . ./ots.sh
 . ./newblock.sh
 . ./batching.sh
+. ./gpg.sh
 
 main() {
   trace "Entering main()..."
@@ -752,6 +753,15 @@ main() {
           # curl -v -d "{\"hash\":\"a6ea81a46fec3d02d40815b8667b388351edecedc1cc9f97aab55b566db7aac8\",\"base64otsfile\":\"$(cat a6ea81a46fec3d02d40815b8667b388351edecedc1cc9f97aab55b566db7aac8.ots | base64 | tr -d '\n')\"}" localhost:8888/ots_info
 
           response=$(serve_ots_info "${line}")
+          returncode=$?
+          ;;
+        gpg_clearsign)
+          # POST http://192.168.111.152:8080/gpg_clearsign
+          # BODY {"document":"Hello, this is my document"}
+
+          # curl -v -d "{\"document\":\"some text\"}" localhost:8888/gpg_clearsign
+
+          response=$(gpg_clearsign "$(echo "${line}" | jq -r ".document")")
           returncode=$?
           ;;
         *)
