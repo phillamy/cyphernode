@@ -23,6 +23,7 @@
 # - ln_getinfo
 # - ln_newaddr
 #
+# - gpg_clearsign
 #
 
 tests()
@@ -340,8 +341,60 @@ tests()
   #echo "Tested ln_create_invoice."
 
   # ln_pay
+}
 
+test_gpg()
+{
+  local response
+  local return_code
+  local document
+  local signature
 
+  echo "Starting to test GPG at `date -u +"%FT%H%MZ"`"
+
+  # gpg_clearsign
+  # POST http://proxy:8888/gpg_clearsign
+  # BODY {"document":"Some text"}
+
+  # gpg_clearsign
+  document=$(echo "Some text" | base64 -w 0)
+  response=$(curl -v -H "Content-Type: application/json" -d "{\"document\":\"${document}\"}" proxy:8888/gpg_clearsign)
+
+  return_code=$(echo ${response} | jq -r ".return_code")
+  if [ "${return_code}" = "null" ] || [ "${return_code}" != "0" ]; then
+    return 200
+  fi
+  echo "OK - Tested gpg_clearsign."
+
+  # gpg_verify_clearsign
+  document=$(echo ${response} | jq -r '.body')
+  response=$(curl -v -H "Content-Type: application/json" -d "{\"document\":\"${document}\"}" proxy:8888/gpg_verify_clearsign)
+  
+  return_code=$(echo ${response} | jq -r ".return_code")
+  if [ "${return_code}" = "null" ] || [ "${return_code}" != "0" ]; then
+    return 201
+  fi  
+  echo "OK - Tested gpg_verify_clearsign."
+
+  # gpg_detachsign
+  document=$(echo "Some text" | base64 -w 0)
+  response=$(curl -v -H "Content-Type: application/json" -d "{\"document\":\"${document}\"}" proxy:8888/gpg_detachsign)
+  
+  return_code=$(echo ${response} | jq -r ".return_code")
+  if [ "${return_code}" = "null" ] || [ "${return_code}" != "0" ]; then
+    return 201
+  fi  
+  echo "OK - Tested gpg_detachsign."
+
+  # gpg_verify_detachsign
+  signature=$(echo ${response} | jq -r ".body")
+  response=$(curl -v -H "Content-Type: application/json" -d "{\"signature\":\"${signature}\",\"original_message\":\"${document}\"}" proxy:8888/gpg_verify_detachsign)
+  
+  return_code=$(echo ${response} | jq -r ".return_code")
+  if [ "${return_code}" = "null" ] || [ "${return_code}" != "0" ]; then
+    return 201
+  fi  
+  echo "OK - Tested gpg_verify_detachsign."
 }
 
 wait_for_callbacks()
@@ -352,4 +405,5 @@ wait_for_callbacks()
 
 apk add curl jq
 
-tests
+#tests
+test_gpg

@@ -757,11 +757,38 @@ main() {
           ;;
         gpg_clearsign)
           # POST http://192.168.111.152:8080/gpg_clearsign
-          # BODY {"document":"Hello, this is my document"}
+          # BODY {"document":"Some text"}
 
-          # curl -v -d "{\"document\":\"some text\"}" localhost:8888/gpg_clearsign
+          # curl -v -d "{\"document\":\"some basae64 text\"}" localhost:8888/gpg_clearsign
 
-          response=$(gpg_clearsign "$(echo "${line}" | jq -r ".document")")
+          response=$(gpg_clearsign "$(echo "${line}" | jq -r '.document')")
+          returncode=$?
+          ;;
+        gpg_verify_clearsign)
+          # POST http://192.168.111.152:8080/gpg_verify_clearsign
+          # BODY {"document":"Some text"}
+
+          # curl -v -d "{\"document\":\"some base64 text PGP signed\"}" localhost:8888/gpg_verify_clearsign
+
+          response=$(gpg_verify_clearsign "$(echo "${line}" | jq -r '.document')")
+          returncode=$?
+          ;;
+        gpg_detachsign)
+          # POST http://192.168.111.152:8080/gpg_detachsign
+          # BODY {"document":"Some text"}
+
+          # curl -v -d "{\"document\":\"some base64 text PGP signed\"}" localhost:8888/gpg_detachsign
+
+          response=$(gpg_detachsign "$(echo "${line}" | jq -r '.document')")
+          returncode=$?
+          ;;
+        gpg_verify_detachsign)
+          # POST http://192.168.111.152:8080/gpg_verify_detachsign
+          # BODY {"signature":"signature","original_message","original text"}
+
+          # curl -v -d "{\"signature\":\"base64 signature\",\"original_message\":\"base64 original text\"}" localhost:8888/gpg_verify_detachsign
+
+          response=$(gpg_verify_detachsign "$(echo "${line}" | jq -r '.signature')" "$(echo "${line}" | jq -r '.original_message')")
           returncode=$?
           ;;
         *)

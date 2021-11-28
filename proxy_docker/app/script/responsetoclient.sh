@@ -11,6 +11,10 @@ response_to_client()
   local contenttype=${3}
   local length=$(echo -en "${response}" | wc -c)
 
+  trace "response [${response}]"
+  trace "returncode [${returncode}]"
+  trace "contenttype [${contenttype}]"
+
   [ -z "${contenttype}" ] && contenttype="application/json"
 
   ([ -z "${returncode}" ] || [ "${returncode}" -eq "0" ]) && echo -ne "HTTP/1.1 200 OK\r\n"

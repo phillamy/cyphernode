@@ -14,15 +14,11 @@ And I will strike down upon thee with great vengeance and furious anger those wh
 And you will know My name is the Lord when I lay My vengeance upon thee.
 -----BEGIN PGP SIGNATURE-----
 
-iQGzBAEBCAAdFiEEXWNFWuqOJiDI+K5grEtB+lyCcVUFAmGg9ikACgkQrEtB+lyC
-cVXpMQv+Js0i+SWf2YLTi/Bg0ReWUW4xaEhazNO/rq9ZzBUxqyhr/Bt9nI03JURu
+iQGzBAEBCAAdFiEEXWNFWuqOJiDI+K5grEtB+lyCcVUFAmGg9ikACgkQrEtB+lyCcVXpMQv+Js0i+SWf2YLTi/Bg0ReWUW4xaEhazNO/rq9ZzBUxqyhr/Bt9nI03JURu
 8tkgdCrr2UVfCkP7ehtQ1AtJ6lFyhMhisBHs3ecQr4rBJ7AGtc9QY7+FCBJW8vr4
 4bCFbZLNwOfDfJ/YVRbWC6w2quXQDDuIubrrF0wiH4R68evlTmjilm2juTaW/Tf0
-yaLP3KvOYv7yyxvhsziq0XazK1AEkBiSrTVSbL/Gv4I+uXXUkKhDWtw310zBkpsT
-yiMpTnA0VvjuHVGZocK11G+KD+3igVLXl56nGNZR0h4rnR973FVD0SRMEbgROi75
+yaLP3KvOYv7yyxvhsziq0XazK1AEkBiSrTVSbL/Gv4I+uXXUkKhDWtw310zBkpsTyiMpTnA0VvjuHVGZocK11G+KD+3igVLXl56nGNZR0h4rnR973FVD0SRMEbgROi75
 UYxUvwgcWDfOKlUAM7+3uNHqQXP0dUomSSIjg9HJ4Pv4IMw/KEgo18MIiORuDrmG
 Q2kGbvHnvxOxwQVtKyt6K7/kHME8oEMt5NXvmZzrV2qUrFAZ7GIOVj8T7NrjQcSQ
-YHpRfI3Qpg5gbfsgdAItNecYlHBzfdqUmMuFP7SkzAn6HZ6y1FIt0jca0cL14L2Q
-ldMKVPgn
-=2fwp
+YHpRfI3Qpg5gbfsgdAItNecYlHBzfdqUmMuFP7SkzAn6HZ6y1FIt0jca0cL14L2QldMKVPgn=2fwp
 -----END PGP SIGNATURE-----
