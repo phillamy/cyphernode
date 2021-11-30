@@ -4,6 +4,7 @@ FEATURE_LIGHTNING=<%= (features.indexOf('lightning') != -1)?'true':'false' %>
 FEATURE_BATCHER=<%= (features.indexOf('batcher') != -1)?'true':'false' %>
 FEATURE_SPECTER=<%= (features.indexOf('specter') != -1)?'true':'false' %>
 FEATURE_OTSCLIENT=<%= (features.indexOf('otsclient') != -1)?'true':'false' %>
+FEATURE_OPENPGP=<%= (features.indexOf('openpgp') != -1)?'true':'false' %>
 LIGHTNING_IMPLEMENTATION=<%= lightning_implementation %>
 PROXY_DATAPATH=<%= proxy_datapath %>
 GATEKEEPER_DATAPATH=<%= gatekeeper_datapath %>
@@ -30,6 +31,9 @@ LIGHTNING_DATAPATH=<%= lightning_datapath %>
 <% } %>
 <% if ( features.indexOf('otsclient') !== -1 ) { %>
 OTSCLIENT_DATAPATH=<%= otsclient_datapath %>
+<% } %>
+<% if ( features.indexOf('openpgp') !== -1 ) { %>
+OPENPGP_DATAPATH=<%= openpgp_datapath %>
 <% } %>
 <% if ( bitcoin_mode==="internal" ) { %>
 BITCOIN_DATAPATH=<%= bitcoin_datapath %>

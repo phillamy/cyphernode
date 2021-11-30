@@ -137,6 +137,21 @@ checkots() {
   return 0
 }
 
+checkopenpgp() {
+  echo -en "\r\n\e[1;36mTesting OpenPGP... " > /dev/console
+  local rc
+  local output
+  
+  # expecting response [{"return_code":"1","body":"Z3BnOiBrZXlibG9jayByZXNvdXJjZSAnLy5nbnVwZ3AvcHVicmluZy5rYngnOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5CmdwZzogW2Rvbid0IGtub3ddOiBsZW5ndGggaW52YWxpZApncGc6IG5vIHNpZ25hdHVyZSBmb3VuZApncGc6IHRoZSBzaWduYXR1cmUgY291bGQgbm90IGJlIHZlcmlmaWVkLgpQbGVhc2UgcmVtZW1iZXIgdGhhdCB0aGUgc2lnbmF0dXJlIGZpbGUgKC5zaWcgb3IgLmFzYykKc2hvdWxkIGJlIHRoZSBmaXJzdCBmaWxlIGdpdmVuIG9uIHRoZSBjb21tYW5kIGxpbmUuCg=="}]
+  rc=$(curl -s -H "Content-Type: application/json" -d '{"document":"no-doc"}' http://proxy:8888/gpg_verify_clearsign)
+  echo "${rc}" | jq ".body" | base64 -d | grep "gpg: the signature could not be verified." > /dev/null
+  [ "$?" -ne "0" ] && return 200
+
+  echo -e "\e[1;36mOpenPGP rocks!" > /dev/console
+
+  return 0
+}
+
 checktor() {
   echo -en "\r\n\e[1;36mTesting Tor... " > /dev/console
   local rc
@@ -186,12 +201,12 @@ checkservice() {
   while :
   do
     outcome=0
-    for container in gatekeeper proxy proxycron broker notifier pycoin postgres <%= (features.indexOf('otsclient') != -1)?'otsclient ':'' %><%= (features.indexOf('tor') != -1)?'tor ':'' %>bitcoin  <%= (features.indexOf('lightning') != -1)?'lightning ':'' %>; do
+    for container in gatekeeper proxy proxycron broker notifier pycoin postgres <%= (features.indexOf('otsclient') != -1)?'otsclient ':'' %><%= (features.indexOf('tor') != -1)?'tor ':'' %>bitcoin  <%= (features.indexOf('lightning') != -1)?'lightning ':'' %> <%= (features.indexOf('openpgp') != -1)?'openpgp':''%>; do
       echo -e "  \e[0;32mVerifying \e[0;33m${container}\e[0;32m..." > /dev/console
       (ping -c 10 ${container} 2> /dev/null | grep "0% packet loss" > /dev/null) &
       eval ${container}=$!
     done
-    for container in gatekeeper proxy proxycron broker notifier pycoin postgres <%= (features.indexOf('otsclient') != -1)?'otsclient ':'' %><%= (features.indexOf('tor') != -1)?'tor ':'' %>bitcoin  <%= (features.indexOf('lightning') != -1)?'lightning ':'' %>; do
+    for container in gatekeeper proxy proxycron broker notifier pycoin postgres <%= (features.indexOf('otsclient') != -1)?'otsclient ':'' %><%= (features.indexOf('tor') != -1)?'tor ':'' %>bitcoin  <%= (features.indexOf('lightning') != -1)?'lightning ':'' %> <%= (features.indexOf('openpgp') != -1)?'openpgp':''%>; do
       eval wait '$'${container} ; returncode=$? ; outcome=$((${outcome} + ${returncode}))
       eval c_${container}=${returncode}
     done
@@ -214,8 +229,9 @@ checkservice() {
   #    { "name": "tor", "active":true },
   #    { "name": "bitcoin", "active":true },
   #    { "name": "lightning", "active":true },
+  #    { "name": "openpgp", "active":true }
   #  ]
-  for container in gatekeeper proxy proxycron broker notifier pycoin postgres <%= (features.indexOf('otsclient') != -1)?'otsclient ':'' %><%= (features.indexOf('tor') != -1)?'tor ':'' %>bitcoin  <%= (features.indexOf('lightning') != -1)?'lightning ':'' %>; do
+  for container in gatekeeper proxy proxycron broker notifier pycoin postgres <%= (features.indexOf('otsclient') != -1)?'otsclient ':'' %><%= (features.indexOf('tor') != -1)?'tor ':'' %>bitcoin  <%= (features.indexOf('lightning') != -1)?'lightning ':'' %> <%= (features.indexOf('openpgp') != -1)?'openpgp':''%>; do
     [ -n "${result}" ] && result="${result},"
     result="${result}{\"name\":\"${container}\",\"active\":"
     eval "returncode=\$c_${container}"
@@ -285,6 +301,7 @@ feature_status() {
 #    { "name": "tor", "working":true },
 #    { "name": "bitcoin", "working":true },
 #    { "name": "lightning", "working":true },
+#    { "name": "openpgp", "working":true },
 #  ]
 #}
 
@@ -320,6 +337,7 @@ fi
 #    { "name": "tor", "working":true },
 #    { "name": "bitcoin", "working":true },
 #    { "name": "lightning", "working":true },
+#    { "name": "openpgp", "working":true },
 #  ]
 
 #############################
@@ -413,6 +431,24 @@ fi
 finalreturncode=$((${returncode} | ${finalreturncode}))
 result="${result}$(feature_status ${returncode} 'OTSclient error!')}"
 <% } %>
+
+<% if (features.indexOf('openpgp') != -1) { %>
+#############################
+# OPENPGP                   #
+#############################
+
+result="${result},{\"coreFeature\":false, \"name\":\"openpgp\",\"working\":"
+status=$(echo "{${containers}}" | jq ".containers[] | select(.name == \"openpgp\") | .active")
+if [[ "${workingproxy}" = "true" && "${status}" = "true" ]]; then
+  timeout_feature checkopenpgp
+  returncode=$?
+else
+  returncode=1
+fi
+finalreturncode=$((${returncode} | ${finalreturncode}))
+result="${result}$(feature_status ${returncode} 'OpenPGP error!')}"
+<% } %>
+
 
 <% if (features.indexOf('tor') != -1) { %>
 #############################

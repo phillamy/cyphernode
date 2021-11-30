@@ -91,6 +91,7 @@ module.exports = class App {
       traefik_version: process.env.TRAEFIK_VERSION,
       mosquitto_version: process.env.MOSQUITTO_VERSION,
       otsclient_version: process.env.OTSCLIENT_VERSION,
+      openpgp_version: process.env.OPENPGP_VERSION,
       bitcoin_version: process.env.BITCOIN_VERSION,
       lightning_version: process.env.LIGHTNING_VERSION,
       notifier_version: process.env.NOTIFIER_VERSION,
@@ -151,6 +152,7 @@ module.exports = class App {
         'cyphernode/pycoin': this.sessionData.pycoin_version,
         'cyphernode/postgres': this.sessionData.postgres_version,
         'cyphernode/otsclient': this.sessionData.otsclient_version,
+        'cyphernode/openpgp': this.sessionData.openpgp_version,
         'traefik': this.sessionData.traefik_version,
         'cyphernode/clightning': this.sessionData.lightning_version,
         'cyphernode/notifier': this.sessionData.notifier_version,
@@ -368,7 +370,8 @@ module.exports = class App {
       'proxy_datapath',
       'bitcoin_datapath',
       'lightning_datapath',
-      'otsclient_datapath'
+      'otsclient_datapath',
+      'openpgp_datapath'
     ];
 
     for( let pathProp of pathProps ) {
@@ -561,6 +564,10 @@ module.exports = class App {
           clearnet: !this.isChecked('features', 'tor') || this.isChecked('clearnet', 'clearnet_lightning'),
           tor_hostname: this.sessionData.tor_lightning_hostname
         }
+      },
+      openpgp: {
+        networks: ['cyphernodenet'],
+        docker: "cyphernode/openpgp:" + this.config.docker_versions['cyphernode/openpgp'],
       }
     }
 

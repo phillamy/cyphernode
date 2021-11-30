@@ -405,5 +405,5 @@ wait_for_callbacks()
 
 apk add curl jq
 
-#tests
+tests
 test_gpg

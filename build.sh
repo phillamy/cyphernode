@@ -10,6 +10,7 @@ PROXY_VERSION="v0.7.0-dev-local"
 NOTIFIER_VERSION="v0.7.0-dev-local"
 PROXYCRON_VERSION="v0.7.0-dev-local"
 OTSCLIENT_VERSION="v0.7.0-dev-local"
+OPENPGP_VERSION="v0.7.0-dev-local"
 PYCOIN_VERSION="v0.7.0-dev-local"
 
 trace()
@@ -39,7 +40,8 @@ build_docker_images() {
   && docker build notifier_docker/ -t cyphernode/notifier:$NOTIFIER_VERSION \
   && docker build cron_docker/ -t cyphernode/proxycron:$PROXYCRON_VERSION \
   && docker build pycoin_docker/ -t cyphernode/pycoin:$PYCOIN_VERSION \
-  && docker build otsclient_docker/ -t cyphernode/otsclient:$OTSCLIENT_VERSION
+  && docker build otsclient_docker/ -t cyphernode/otsclient:$OTSCLIENT_VERSION \
+  && docker build openpgp_docker/ -t cyphernode/openpgp:$OPENPGP_VERSION
 }
 
 build_docker_images

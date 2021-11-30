@@ -309,6 +309,37 @@ services:
     restart: always
     <% } %>
 
+  <% if ( features.indexOf('openpgp') !== -1 ) { %>
+  ##########################
+  # OPEN PGP               #
+  ##########################
+
+  openpgp:
+    image: cyphernode/openpgp:<%= openpgp_version %>
+    command: $USER ./startgpg.sh
+    volumes:
+      - "<%= logs_datapath %>:/cnlogs"
+      - "<%= openpgp_datapath %>:/.gnupgp"
+    networks:
+      - cyphernodenet
+    depends_on:
+      - broker
+    <% if ( docker_mode === 'swarm' ) { %>
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.io.cyphernode == true
+      restart_policy:
+        condition: "any"
+        delay: 1s
+      update_config:
+        parallelism: 1
+    <% } else { %>
+    restart: always
+    <% } %>
+  <% } %>
+
   ##########################
   # PYCOIN                 #
   ##########################

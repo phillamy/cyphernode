@@ -373,6 +373,44 @@ module.exports = {
       message: prefix()+'Where is your otsclient data?'+utils.getHelp('otsclient_datapath_custom'),
     },
     {
+      when: function(props) { return installerDocker(props) && props.features.indexOf('openpgp') !== -1 },
+      type: 'list',
+      name: 'openpgp_datapath',
+      default: utils.getDefault( 'openpgp_datapath' ),
+      choices: [
+        {
+          name: utils.setupDir()+"/cyphernode/openpgp",
+          value: utils.setupDir()+"/cyphernode/openpgp"
+        },
+        {
+          name: utils.defaultDataDirBase()+"/cyphernode/openpgp",
+          value: utils.defaultDataDirBase()+"/cyphernode/openpgp"
+        },
+        {
+          name: utils.defaultDataDirBase()+"/.cyphernode/openpgp",
+          value: utils.defaultDataDirBase()+"/.cyphernode/openpgp"
+        },
+        {
+          name: utils.defaultDataDirBase()+"/openpgp",
+          value: utils.defaultDataDirBase()+"/openpgp"
+        },
+        {
+          name: "Custom path",
+          value: "_custom"
+        }
+      ],
+      message: prefix()+'Where do you want to store your OpenPGP data?'+utils.getHelp('openpgp_datapath'),
+    },
+    {
+      when: function(props) { return installerDocker(props) && props.features.indexOf('openpgp') !== -1 && props.openpgp_datapath === '_custom' },
+      type: 'input',
+      name: 'openpgp_datapath_custom',
+      default: utils.getDefault( 'openpgp_datapath_custom' ),
+      filter: utils.trimFilter,
+      validate: utils.pathValidator,
+      message: prefix()+'Where is your OpenPGP data?'+utils.getHelp('openpgp_datapath_custom'),
+    },    
+    {
       type: 'confirm',
       name: 'gatekeeper_expose',
       default: utils.getDefault( 'gatekeeper_expose' ),

@@ -110,7 +110,7 @@ sudo_if_required() {
 }
 
 modify_permissions() {
-  local directories=("$BITCOIN_DATAPATH" "$LIGHTNING_DATAPATH" "$PROXY_DATAPATH" "$GATEKEEPER_DATAPATH" "$OTSCLIENT_DATAPATH" "$POSTGRES_DATAPATH" "$LOGS_DATAPATH" "$TRAEFIK_DATAPATH" "$TOR_DATAPATH")
+  local directories=("$BITCOIN_DATAPATH" "$LIGHTNING_DATAPATH" "$PROXY_DATAPATH" "$GATEKEEPER_DATAPATH" "$OTSCLIENT_DATAPATH" "$POSTGRES_DATAPATH" "$LOGS_DATAPATH" "$TRAEFIK_DATAPATH" "$TOR_DATAPATH" "$OPENPGP_DATAPATH")
   for d in "${directories[@]}"
   do
     if [[ -e $d ]]; then
@@ -122,7 +122,7 @@ modify_permissions() {
 }
 
 modify_owner() {
-  local directories=("$BITCOIN_DATAPATH" "$LIGHTNING_DATAPATH" "$PROXY_DATAPATH" "$GATEKEEPER_DATAPATH" "$OTSCLIENT_DATAPATH" "$POSTGRES_DATAPATH" "$LOGS_DATAPATH" "$TRAEFIK_DATAPATH" "$TOR_DATAPATH")
+  local directories=("$BITCOIN_DATAPATH" "$LIGHTNING_DATAPATH" "$PROXY_DATAPATH" "$GATEKEEPER_DATAPATH" "$OTSCLIENT_DATAPATH" "$POSTGRES_DATAPATH" "$LOGS_DATAPATH" "$TRAEFIK_DATAPATH" "$TOR_DATAPATH" "$OPENPGP_DATAPATH")
   local user=$(id -u $RUN_AS_USER):$(id -g $RUN_AS_USER)
   for d in "${directories[@]}"
   do
@@ -192,6 +192,7 @@ configure() {
              -e NOTIFIER_VERSION=$NOTIFIER_VERSION \
              -e PROXYCRON_VERSION=$PROXYCRON_VERSION \
              -e OTSCLIENT_VERSION=$OTSCLIENT_VERSION \
+             -e OPENPGP_VERSION=$OPENPGP_VERSION \
              -e PYCOIN_VERSION=$PYCOIN_VERSION \
              -e POSTGRES_VERSION=$POSTGRES_VERSION \
              -e BITCOIN_VERSION=$BITCOIN_VERSION \
@@ -554,6 +555,14 @@ install_docker() {
     fi
   fi
 
+  if [[ $FEATURE_OPENPGP == true ]]; then
+    if [ ! -d $OPENPGP_DATAPATH ]; then
+      step "   [32mcreate[0m $OPENPGP_DATAPATH"
+      sudo_if_required mkdir -p $OPENPGP_DATAPATH
+      next
+    fi
+  fi
+
   docker swarm join-token worker > /dev/null 2>&1
   local noSwarm=$?;
 
@@ -863,6 +872,7 @@ PROXY_VERSION="v0.7.0-dev"
 NOTIFIER_VERSION="v0.7.0-dev"
 PROXYCRON_VERSION="v0.7.0-dev"
 OTSCLIENT_VERSION="v0.7.0-dev"
+OPENPGP_VERSION="v0.7.0-dev"
 PYCOIN_VERSION="v0.7.0-dev"
 CYPHERAPPS_VERSION="dev"
 BITCOIN_VERSION="v22.0"
@@ -927,6 +937,7 @@ if [[ $nbbuiltimgs -gt 1 ]]; then
     NOTIFIER_VERSION="$NOTIFIER_VERSION-local"
     PROXYCRON_VERSION="$PROXYCRON_VERSION-local"
     OTSCLIENT_VERSION="$OTSCLIENT_VERSION-local"
+    OPENPGP_VERSION="$OPENPGP_VERSION-local"
     PYCOIN_VERSION="$PYCOIN_VERSION-local"
   fi
 fi

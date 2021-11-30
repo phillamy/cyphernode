@@ -148,6 +148,24 @@
           "otsclient_datapath"
         ]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "features": {
+            "contains": {
+              "enum": [
+                "openpgp"
+              ]
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "openpgp_datapath"
+        ]
+      }
     }
   ],
   "properties": {
@@ -498,6 +516,22 @@
       "title": "Postgres custom datapath",
       "examples": [
         "/tmp/cyphernode/postgres"
+      ]
+    },
+    "openpgp_datapath": {
+      "$id": "#/properties/openpgp_datapath",
+      "type": "string",
+      "title": "OpenPGP datapath",
+      "examples": [
+        "/tmp/cyphernode/openpgp"
+      ]
+    },
+    "openpgp_datapath_custom": {
+      "$id": "#/properties/openpgp_datapath_custom",
+      "type": "string",
+      "title": "OpenPGP custom datapath",
+      "examples": [
+        "/tmp/cyphernode/openpgp"
       ]
     },
     "logs_datapath": {

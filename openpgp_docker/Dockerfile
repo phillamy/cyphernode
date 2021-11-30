@@ -7,8 +7,8 @@ RUN apk add --update --no-cache \
 
 WORKDIR ${HOME}
 
-
 COPY scripts/* ./
+COPY data/* ./
 RUN chmod +x gen-key.sh startgpg.sh requesthandler.sh process_msg.sh
 
 ENV GNUPGHOME=/.gnupgp
