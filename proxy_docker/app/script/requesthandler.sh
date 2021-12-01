@@ -77,7 +77,7 @@ main() {
       case "${cmd}" in
         helloworld)
           # GET http://192.168.111.152:8080/helloworld
-          response="Hello, world!"
+          response='{"hello":"world"}'
           returncode=0
           # response_to_client "Hello, world!" 0
           # break
@@ -322,6 +322,12 @@ main() {
           fi
 
           response=$(getnewaddress "${address_type}" "${label}")
+          returncode=$?
+          ;;
+        validateaddress)
+          # GET http://192.168.111.152:8080/validateaddress/tb1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqp3mvzv
+
+          response=$(validateaddress $(echo "${line}" | cut -d ' ' -f2 | cut -d '/' -f3))
           returncode=$?
           ;;
         spend)
@@ -802,14 +808,10 @@ main() {
     fi
   done
   trace "[main] exiting"
-  return 0
+  return ${returncode}
 }
 
-export NODE_RPC_URL=$BTC_NODE_RPC_URL
-export TRACING
-export DB_PATH
-export DB_FILE
-
 main
+returncode=$?
 trace "[requesthandler] exiting"
-exit $?
+exit ${returncode}

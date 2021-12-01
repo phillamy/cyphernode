@@ -39,15 +39,15 @@ CREATE TABLE tx (
   txid VARCHAR UNIQUE,
   hash VARCHAR UNIQUE,
   confirmations INTEGER DEFAULT 0,
-  timereceived INTEGER,
+  timereceived BIGINT,
   fee REAL,
   size INTEGER,
   vsize INTEGER,
-	is_replaceable BOOLEAN,
+  is_replaceable BOOLEAN,
   blockhash VARCHAR,
   blockheight INTEGER,
-  blocktime INTEGER,
-  conf_target INTEGER,
+  blocktime BIGINT,
+  conf_target SMALLINT,
   inserted_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX idx_tx_timereceived ON tx (timereceived);
@@ -72,7 +72,7 @@ CREATE INDEX idx_watching_tx_tx_id ON watching_tx (tx_id);
 CREATE TABLE batcher (
   id SERIAL PRIMARY KEY,
   label VARCHAR UNIQUE,
-  conf_target INTEGER,
+  conf_target SMALLINT,
   feerate REAL,
   inserted_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -136,21 +136,21 @@ CREATE TABLE cyphernode_props (
 CREATE INDEX idx_cp_property ON cyphernode_props (property);
 CREATE UNIQUE INDEX idx_cp_propval ON cyphernode_props (property, value);
 
-INSERT INTO cyphernode_props (property, value) VALUES ('version', '0.1');
-INSERT INTO cyphernode_props (property, value) VALUES ('pay_index', '0');
+INSERT INTO cyphernode_props (id, property, value) VALUES (1, 'version', '0.1');
+INSERT INTO cyphernode_props (id, property, value) VALUES (2, 'pay_index', '0');
 
 CREATE TABLE ln_invoice (
   id SERIAL PRIMARY KEY,
   label VARCHAR UNIQUE,
   bolt11 VARCHAR UNIQUE,
   payment_hash VARCHAR,
-  msatoshi INTEGER,
+  msatoshi BIGINT,
   status VARCHAR,
   pay_index INTEGER,
-  msatoshi_received INTEGER,
-  paid_at INTEGER,
+  msatoshi_received BIGINT,
+  paid_at BIGINT,
   description VARCHAR,
-  expires_at INTEGER,
+  expires_at BIGINT,
   callback_url VARCHAR,
   calledback BOOLEAN DEFAULT FALSE,
   callback_failed BOOLEAN DEFAULT FALSE,

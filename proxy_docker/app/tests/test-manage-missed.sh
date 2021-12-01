@@ -21,15 +21,31 @@ trace() {
 }
 
 start_test_container() {
-  docker run -d --rm -it --name tests-manage-missed --network=cyphernodenet alpine
+  docker run -d --rm -t --name tests-manage-missed --network=cyphernodenet alpine
 }
 
 stop_test_container() {
-  docker stop tests-manage-missed
+  trace 1 "\n\n[stop_test_container] ${BCyan}Stopping existing containers if they are running...${Color_Off}\n"
+
+  # docker stop tests-manage-missed
+  local containers=$(docker ps -q -f "name=tests-manage-missed")
+  if [ -n "${containers}" ]; then
+    docker stop ${containers}
+  fi
 }
 
 exec_in_test_container() {
   docker exec -it tests-manage-missed $@
+}
+
+wait_for_proxy() {
+  trace 1 "\n\n[wait_for_proxy] ${BCyan}Waiting for the proxy to be ready...${Color_Off}\n"
+
+  # First ping the containers to make sure they're up...
+  docker exec -t tests-manage-missed sh -c 'while true ; do ping -c 1 proxy ; [ "$?" -eq "0" ] && break ; sleep 5; done'
+
+  # Now check if the lightning nodes are ready to accept requests...
+  docker exec -t tests-manage-missed sh -c 'while true ; do curl proxy:8888/helloworld ; [ "$?" -eq "0" ] && break ; sleep 5; done'
 }
 
 test_manage_missed_0_conf() {
@@ -63,9 +79,8 @@ test_manage_missed_0_conf() {
   docker exec -it $(docker ps -q -f "name=cyphernode_bitcoin") bitcoin-cli -rpcwallet=spending01.dat sendtoaddress ${address} 0.0001
   # txid1=$(exec_in_test_container curl -d '{"address":"'${address}'","amount":0.0001}' proxy:8888/spend | jq -r ".txid")
 
-  trace 3 "[test_manage_missed_0_conf] Sleeping for 10 seconds to let the proxy restart..."
-  sleep 10
-  
+  wait_for_proxy
+
   trace 3 "[test_manage_missed_0_conf] Calling executecallbacks..."
   exec_in_test_container curl -s -H "Content-Type: application/json" proxy:8888/executecallbacks
 
@@ -110,9 +125,8 @@ test_manage_missed_1_conf() {
   trace 3 "[test_manage_missed_1_conf] Mine a new block..."
   mine
 
-  trace 3 "[test_manage_missed_1_conf] Sleeping for 10 seconds to let the proxy restart..."
-  sleep 10
-  
+  wait_for_proxy
+
   trace 3 "[test_manage_missed_1_conf] Calling executecallbacks..."
   exec_in_test_container curl -s -H "Content-Type: application/json" proxy:8888/executecallbacks
 }
@@ -120,11 +134,10 @@ test_manage_missed_1_conf() {
 wait_for_callbacks() {
   trace 1 "[wait_for_callbacks] ${BCyan}Let's start the callback servers!...${Color_Off}"
 
-  docker exec -t tests-manage-missed sh -c "nc -vlp1111 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo 1>&2'" &
-  docker exec -t tests-manage-missed sh -c "nc -vlp1112 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo 1>&2'" &
-  docker exec -t tests-manage-missed sh -c "nc -vlp1113 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo 1>&2'" &
-  docker exec -t tests-manage-missed sh -c "nc -vlp1114 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo 1>&2'" &
-
+  docker exec -t tests-manage-missed sh -c "nc -vlp1111 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; echo -en \"\\033[40m\\033[0;37m\" >&2 ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo -e \"\033[0m\" >&2'" &
+  docker exec -t tests-manage-missed sh -c "nc -vlp1112 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; echo -en \"\\033[40m\\033[0;37m\" >&2 ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo -e \"\033[0m\" >&2'" &
+  docker exec -t tests-manage-missed sh -c "nc -vlp1113 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; echo -en \"\\033[40m\\033[0;37m\" >&2 ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo -e \"\033[0m\" >&2'" &
+  docker exec -t tests-manage-missed sh -c "nc -vlp1114 -e sh -c 'echo -en \"HTTP/1.1 200 OK\\\\r\\\\n\\\\r\\\\n\" ; echo -en \"\\033[40m\\033[0;37m\" >&2 ; date >&2 ; timeout 1 tee /dev/tty | cat ; echo -e \"\033[0m\" >&2'" &
 }
 
 TRACING=3
@@ -143,8 +156,6 @@ trace 2 "url3=${url3}"
 trace 2 "url4=${url4}"
 
 exec_in_test_container apk add --update curl
-# exec_in_test_container ping -c 5 tests-manage-missed
-# exec_in_test_container curl -vd 'toto' ${url1}/allo
 test_manage_missed_0_conf
 test_manage_missed_1_conf
 

@@ -22,8 +22,10 @@
 # - gettransaction
 # - ln_getinfo
 # - ln_newaddr
-#
 # - gpg_clearsign
+# - gpg_verify_clearsign
+# - gpg_detachsign
+# - gpg_verify_detachsign
 #
 
 tests()
