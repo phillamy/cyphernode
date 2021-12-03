@@ -6,8 +6,10 @@ BITCOIN_CLI='bitcoin-cli'
 BITCOIN_CLI="$BITCOIN_CLI -regtest"
 <% } %>
 
+sleep 2
+
 <% if( net === 'regtest' ) { %>
-while [ ! `$BITCOIN_CLI -r echo` ]; do echo "CYPHERNODE[createwallet]: bitcoind not ready" ; sleep 10 ; done
+while ! ${BITCOIN_CLI} echo &> /dev/null; do echo "CYPHERNODE[createwallet]: bitcoind not ready"; sleep 10; done
 <% } else { %>
 while [ ! -f "/container_monitor/bitcoin_ready" ]; do echo "CYPHERNODE[createWallet]: bitcoind not ready" ; sleep 10 ; done
 <% } %>
@@ -35,7 +37,7 @@ done
 <% if( net === 'regtest' ) { %>
 # Mining blocks in regtest to have at least 101 blocks
 MINBLOCK=101
-WALLET='watching01.dat'
+WALLET=watching01.dat
 
 blockcount=`$BITCOIN_CLI getblockcount`                            
 blocktomine=`expr $MINBLOCK - $blockcount`
