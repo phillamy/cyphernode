@@ -20,7 +20,7 @@ services:
       - "<%= logs_datapath %>:/cnlogs"
       - container_monitor:/container_monitor
     healthcheck:
-      test: sh -c 'psql -c "select 1;" && touch /container_monitor/postgres_ready && chown $USER /container_monitor/postgres_ready || rm -f /container_monitor/postgres_ready'
+      test: sh -c 'psql -U cyphernode -c "select 1;" && touch /container_monitor/postgres_ready && chown $USER /container_monitor/postgres_ready || rm -f /container_monitor/postgres_ready'
       interval: 30s
       timeout: 10s
       retries: 10
