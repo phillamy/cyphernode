@@ -37,7 +37,7 @@ done
 <% if( net === 'regtest' ) { %>
 # Mining blocks in regtest to have at least 101 blocks
 MINBLOCK=101
-WALLET=watching01.dat
+WALLET=spendings01.dat
 
 blockcount=`$BITCOIN_CLI getblockcount`                            
 blocktomine=`expr $MINBLOCK - $blockcount`
