@@ -24,14 +24,17 @@ do
 done
 
 <% if( net === 'regtest' ) { %>
-BLOCKS_TO_MINE=101
-
+BLOCKS_TO_MINE_MAKE_SPENDABLE=100
+WALLET=spending01.dat
 MIN_BALANCE=1.00000000
-balance=`bitcoin-cli -rpcwallet=spending01.dat getbalance`
+balance=`bitcoin-cli -rpcwallet=$WALLET getbalance`
 echo "CYPHERNODE[createWallet]: Current balance [$balance] - Min balance is [$MIN_BALANCE]"
 
-[ `expr $balance \>= $MIN_BALANCE` -eq 0 ] && \
-  echo "CYPHERNODE[createWallet]: Balance is less than $MIN_BALANCE - mining $BLOCKS_TO_MINE blocks" && \
-  bitcoin-cli -rpcwallet=spending01.dat -generate $BLOCKS_TO_MINE && \
-  echo "CYPHERNODE[createWallet]: Done mining $BLOCKS_TO_MINE blocks"
+while [ `expr $balance \< $MIN_BALANCE` -eq 1 ]; do
+  echo "CYPHERNODE[createWallet]: Balance [$balance] is less than [$MIN_BALANCE] - mining 1 block"
+  bitcoin-cli -rpcwallet=$WALLET -generate 1
+  echo "CYPHERNODE[createWallet]: Done mining 1 block"
+  balance=`bitcoin-cli -rpcwallet=$WALLET getbalance`
+  echo "CYPHERNODE[createWallet]: New balance [$balance]"
+done
 <% } %>
