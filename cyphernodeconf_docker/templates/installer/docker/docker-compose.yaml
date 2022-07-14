@@ -94,7 +94,7 @@ services:
       - "<%= bitcoin_datapath %>/bitcoin-client.conf:/.bitcoin/bitcoin.conf:ro"
       - container_monitor:/container_monitor
     healthcheck:
-      test: sh -c 'lightning-cli getinfo && touch /container_monitor/lightning_ready && chown -R $USER /container_monitor || rm -f /container_monitor/lightning_ready'
+      test: lightning-cli getinfo && touch /container_monitor/lightning_ready && chown -R $USER /container_monitor || rm -f /container_monitor/lightning_ready
       interval: 30s
       timeout: 10s
       retries: 10
@@ -143,7 +143,7 @@ services:
       <% if( net === 'regtest' ) { %>
       test: sh -c '[ `bitcoin-cli getblockcount` -ge 101 ] && touch /container_monitor/bitcoin_ready && chown -R $USER /container_monitor || rm -f /container_monitor/bitcoin_ready'
       <% } else { %>
-      test: sh -c 'bitcoin-cli echo && touch /container_monitor/bitcoin_ready && chown -R $USER /container_monitor || rm -f /container_monitor/bitcoin_ready'
+      test: bitcoin-cli echo && touch /container_monitor/bitcoin_ready && chown -R $USER /container_monitor || rm -f /container_monitor/bitcoin_ready
       <% } %>
       interval: 30s
       timeout: 10s
@@ -199,7 +199,7 @@ services:
       <% } %>
       - container_monitor:/container_monitor
     healthcheck:
-      test: sh -c 'curl localhost:8888/helloworld && touch /container_monitor/proxy_ready && chown -R $USER /container_monitor || rm -f /container_monitor/proxy_ready'
+      test: curl localhost:8888/helloworld && touch /container_monitor/proxy_ready && chown -R $USER /container_monitor || rm -f /container_monitor/proxy_ready
       interval: 30s
       timeout: 10s
       retries: 10
