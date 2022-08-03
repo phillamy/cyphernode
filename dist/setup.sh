@@ -498,6 +498,8 @@ install_docker() {
   copy_file $cyphernodeconf_filepath/pycoin/pycoin.env $current_path/.env/pycoin.env 1 $SUDO_REQUIRED
   copy_file $cyphernodeconf_filepath/otsclient/otsclient.env $current_path/.env/otsclient.env 1 $SUDO_REQUIRED
   copy_file $cyphernodeconf_filepath/proxycron/proxycron.env $current_path/.env/proxycron.env 1 $SUDO_REQUIRED
+  copy_file $cyphernodeconf_filepath/wasabi/wasabi.env $current_path/.env/wasabi.env 1 $SUDO_REQUIRED
+  copy_file $cyphernodeconf_filepath/wasabi/backend/wasabi-backend.env $current_path/.env/wasabi-backend.env 1 $SUDO_REQUIRED
 
 
   if [[ $BITCOIN_INTERNAL == true ]]; then
@@ -918,7 +920,7 @@ LIGHTNING_VERSION="v0.10.2"
 TRAEFIK_VERSION="v2.6.3"
 MOSQUITTO_VERSION="1.6-openssl"
 POSTGRES_VERSION="14.0-bullseye"
-WASABI_VERSION="v0.3.1"
+WASABI_VERSION="v2.0.1.3"
 
 SETUP_DIR=$(dirname $(realpath $0))
 

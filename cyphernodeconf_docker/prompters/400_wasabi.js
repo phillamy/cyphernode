@@ -56,7 +56,7 @@ module.exports = {
     ];
   },
   templates: function( props ) {
-    let files = ['Config.json'];
+    let files = ['Config.json', 'wasabi.env',  'backend/wasabi-backend.env'];
     if( props.net === 'regtest' ) {
       files = files.concat( ['backend/Config.json', 'backend/CcjRoundConfig.json'] )
     }

@@ -20,3 +20,128 @@ bitcoin-cli generatetoaddress 1 bcrt1q6f8hxsm3csjyw7q4llrlhll9rxj0le6cv3ltdr
 
 curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"getwalletinfo" }' http://wasabi_0:18099/|jq
 curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"listunspentcoins" }' http://wasabi_0:18099/|jq
+
+
+============================================================
+
+RPC definition:
+https://github.com/zkSNACKs/WalletWasabi/blob/f007b78aa4a1ada6e0c565f29064fa17a997333f/WalletWasabi.Fluent/Rpc/WasabiJsonRpcService.cs
+
+
+
+/proxy # curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"getnewaddress", "params": { "label":"test"} }' http://wasabi_0:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "error": {
+    "code": -32603,
+    "message": "There is no wallet loaded."
+  },
+  "id": "0"
+}
+
+# Get status
+curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"getstatus", "params": {}' http://wasabi_0:18099/ | jq
+Fail
+
+
+curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params": { "walletName":"wasabi"} }' http://wasabi_0:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "error": {
+    "code": -32603,
+    "message": "Wallet 'wasabi' not found."
+  },
+  "id": "0"
+}
+
+/proxy # curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"philler", "password":""} }' http://wasabi_1:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": "empower right vital tattoo grocery double endorse flat cat volume illegal nose",
+  "id": "0"
+}
+==> wallet created here /cyphernode/dist/cyphernode/wasabi/1/Wallets/RegTest/philler.json
+
+curl -u wasabi:CHANGEME -s -d '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params":["wasabi"]}' http://wasabi_1:18099/ | jq
+
+# This works 
+/proxy # curl -u wasabi:CHANGEME -s -d '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params":["philler"]}' http://wasabi_1:18099/ | jq
+
+# This works 
+/proxy # curl -u wasabi:CHANGEME -s -d  '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params": { "walletName":"philler"} }' http://wasabi_1:18099/ | jq
+
+/proxy # curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"philler-1", "password":""} }' http://wasabi_1:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": "festival theory alter bag sad diamond copper alter portion type pitch finish",
+  "id": "0"
+}
+
+/proxy # curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"getnewaddress", "params": { "label":"test"} }' http://wasabi_0:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "address": "bcrt1qdg27gmx58hpeggjyzs6rej0qwdhu757ms3d2df",
+    "keyPath": "84'/0'/0'/0/24",
+    "label": [
+      "test"
+    ],
+    "publicKey": "03e2381dd772ee9ed3fb238c5871dde6f213f2bd21ebb2cf1a83a5fb5e13b4dff6",
+    "p2wpkh": "00146a15e46cd43dc394224414343cc9e0736fcf53db"
+  },
+  "id": "0"
+}
+
+/proxy # curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"getnewaddress", "params": { "label":"test"} }' http://wasabi_1:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": {
+    "address": "bcrt1q2n0v93mzv6kw5ka0k8ywfleqnat9ktqpuwq3jh",
+    "keyPath": "84'/0'/0'/0/21",
+    "label": [
+      "test"
+    ],
+    "publicKey": "02f0928f2dad7641efa8f8a82a1d4dc07f35f546494950e844d3b41e318624f302",
+    "p2wpkh": "001454dec2c76266acea5bafb1c8e4ff209f565b2c01"
+  },
+  "id": "0"
+}
+
+bitcoin-cli -rpcwallet=spending01.dat sendtoaddress bcrt1qdg27gmx58hpeggjyzs6rej0qwdhu757ms3d2df 20
+f4ff2710850abe19e3762c6b87f6e0f270944c885f00b8bfc280035fa503a83c
+
+bitcoin-cli -rpcwallet=spending01.dat sendtoaddress bcrt1q2n0v93mzv6kw5ka0k8ywfleqnat9ktqpuwq3jh 20
+2dc921823a37eb7877dcca94acf1f9e395147c37c12f7c029b5eb0945ed41097
+
+
+cyphernode/dist % docker exec -it 9fbe8fb64edd curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"not-mixed-yet", "password":""} }' http://wasabi_1:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": "apology tree force tone crumble top slam letter later view organ patient",
+  "id": "0"
+}
+cyphernode/dist % docker exec -it 9fbe8fb64edd curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"all-mixed", "password":""} }' http://wasabi_1:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": "home hair large there clock clap decide another dilemma call recall place",
+  "id": "0"
+}
+cyphernode/dist % docker exec -it 9fbe8fb64edd curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"all-mixed", "password":""} }' http://wasabi_0:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": "test emerge lake easy circle feature ready trophy about submit monitor embody",
+  "id": "0"
+}
+cyphernode/dist % docker exec -it 9fbe8fb64edd curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"not-mixed-yet", "password":""} }' http://wasabi_0:18099/ | jq
+{
+  "jsonrpc": "2.0",
+  "result": "voyage mask party need rude asset label obtain slot panel cannon melody",
+  "id": "0"
+}
+
+curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"getnewaddress", "params": { "label":"test"} }' http://wasabi_0:18099/ | jq
+bcrt1qku9qtyutuxndh20jas586jk2zcy08yp24h5xvq
+bcrt1q5yxwqzqut3jhg9agyp8e45gg5nqrv90ytdj5xf
+
+
+curl -u wasabi:CHANGEME -s -d  '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params": { "walletName":"not-mixed-yet"} }' http://wasabi_1:18099/ | jq

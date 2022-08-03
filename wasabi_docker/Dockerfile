@@ -1,59 +1,26 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine3.12 AS builder
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+FROM debian:bullseye-slim
 
-RUN apk add --no-cache git
+ARG WASABI_VERSION="2.0.1.3"
 
-# Version v1.1.12.2
-RUN git clone -b v1.1.12.2 --recursive https://github.com/zkSNACKs/WalletWasabi.git /WalletWasabi
+ENV DEBIAN_FRONTEND noninteractive
 
-WORKDIR /WalletWasabi
+RUN apt-get update && apt-get install -y xvfb libfontconfig1 wget gpg && apt-get clean
 
-COPY WalletGenerator /WalletGenerator
+RUN wget https://raw.githubusercontent.com/zkSNACKs/WalletWasabi/master/PGP.txt && \
+    gpg --import PGP.txt && \
+    wget https://github.com/zkSNACKs/WalletWasabi/releases/download/v${WASABI_VERSION}/Wasabi-${WASABI_VERSION}.deb && \
+    wget https://github.com/zkSNACKs/WalletWasabi/releases/download/v${WASABI_VERSION}/Wasabi-${WASABI_VERSION}.deb.asc && \
+    gpg --verify Wasabi-${WASABI_VERSION}.deb.asc Wasabi-${WASABI_VERSION}.deb 
 
-WORKDIR /WalletGenerator
-
-RUN dotnet build WalletGenerator.sln -c Release -o /app/ -r linux-x64
-RUN dotnet publish WalletGenerator.sln --output /app/ -c Release --disable-parallel --no-cache /p:DebugType=none /p:DebugSymbols=false /p:ErrorReport=none
-
-WORKDIR /WalletWasabi/WalletWasabi.Gui
-
-RUN dotnet build -c Release -o /app/ -r linux-x64
-RUN dotnet publish --output /app/ -c Release --disable-parallel --no-cache /p:DebugType=none /p:DebugSymbols=false /p:ErrorReport=none
-
-# remove unused files
-#RUN rm /app/TorDaemons/tor-osx64.zip /app/TorDaemons/tor-win32.zip
-RUN rm -rf /app/TorDaemons
-RUN rm -rf /app/runtimes/osx /app/runtimes/tizen-armel /app/runtimes/tizen-x86 /app/runtimes/win /app/runtimes/win-x64 /app/runtimes/win--x86
-RUN rm -rf /app/Hwi/Software/hwi-osx64.zip /app/Hwi/Software/hwi-win64
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine3.12
-
-ENV APPDATA=/root/.walletwasabi/client
-
-RUN apk add --no-cache --update \
-    expect \
-    tor \
-    icu \
-    curl \
-    jq \
- && mkdir -p ${APPDATA}/Wallets/
-
-COPY --from=builder /app /app
+RUN dpkg -i Wasabi-${WASABI_VERSION}.deb && \
+    rm /Wasabi-${WASABI_VERSION}.deb && \
+    rm /Wasabi-${WASABI_VERSION}.deb.asc && \
+    apt -y remove wget gpg && apt -y autoremove
 
 WORKDIR /app
 
-ADD scripts scripts
 COPY docker-entrypoint.sh docker-entrypoint.sh
 COPY torrc /etc/tor/torrc
 
-# Do not run as root user
-#RUN chown -R www-data:www-data /app /wasabi
-#USER whateveruser
-
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT false
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
-
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["wassabee"]

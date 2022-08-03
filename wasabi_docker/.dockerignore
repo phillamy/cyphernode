@@ -1,6 +1,2 @@
-WalletGenerator/bin
-WalletGenerator/obj
-WalletGenerator/Client
-WalletGenerator/.vscode
 Dockerfile
 .dockerignore

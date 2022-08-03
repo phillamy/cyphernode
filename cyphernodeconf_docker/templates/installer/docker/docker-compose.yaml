@@ -375,6 +375,8 @@ services:
   wasabi-backend:
     image: cyphernode/wasabi-backend:<%= wasabi_version %>
     entrypoint: sh -c 'sleep 5 ; while [ ! -f "/container_monitor/bitcoin_ready" ]; do echo "bitcoin not ready" ; sleep 5 ; done ; echo "bitcoin ready!" ; /app/docker-entrypoint.sh'
+    env_file:
+      - .env/wasabi-backend.env
     volumes:
       - "<%= wasabi_datapath %>/backend:/root/.walletwasabi/backend"
       - container_monitor:/container_monitor:ro
@@ -395,13 +397,8 @@ services:
   wasabi_<%= index %>:
     image: cyphernode/wasabi:<%= wasabi_version %>
     entrypoint: sh -c 'sleep <%= (index+1) * 5 + 11 %> ; while [ ! -f "/container_monitor/bitcoin_ready" ]; do echo "bitcoin not ready" ; sleep <%= index * 5 + 10 %> ; done ; echo "bitcoin ready!" ; /app/docker-entrypoint.sh'
-    environment:
-      - "WASABI_RPC_USER=<%= wasabi_rpcuser %>:<%= wasabi_rpcpassword %>"
-      - "WASABI_RPC_CFG=/tmp/wasabi_curlcfg.properties"
-    <% if ( features.indexOf('tor') !== -1 ) { %>
-      - "TOR_HOST=tor"
-      - "TOR_PORT=9050"
-    <% } %>
+    env_file:
+      - .env/wasabi.env
     volumes:
       - "<%= wasabi_datapath %>/<%= index %>:/root/.walletwasabi/client"
       - container_monitor:/container_monitor:ro

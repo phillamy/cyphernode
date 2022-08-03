@@ -1,41 +1,27 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine3.12 AS builder
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-RUN apk add --no-cache git patch
+RUN git clone -b v2.0.1.3 --depth 1 https://github.com/zkSNACKs/WalletWasabi.git /src
 
-# Version v1.1.12.2
-RUN git clone -b v1.1.12.2 --recursive https://github.com/zkSNACKs/WalletWasabi.git /WalletWasabi
+WORKDIR /src
 
-WORKDIR /WalletWasabi
+RUN dotnet restore "WalletWasabi.Backend/WalletWasabi.Backend.csproj"
 
-COPY patches/Program.patch .
-RUN patch WalletWasabi.Backend/Program.cs -i Program.patch
-RUN rm Program.patch
+WORKDIR "/src/WalletWasabi.Backend"
+RUN dotnet build "WalletWasabi.Backend.csproj" -c Release -o /app/build
 
-WORKDIR /WalletWasabi/WalletWasabi.Backend
+RUN dotnet publish "WalletWasabi.Backend.csproj" -c Release -o /app/publish
 
-RUN dotnet build -c Release -o /app/ -r linux-x64
-RUN dotnet publish --output /app/ -c Release --disable-parallel --no-cache /p:DebugType=none /p:DebugSymbols=false /p:ErrorReport=none
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine3.12
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim
 
-RUN apk add --no-cache --update \
-    icu
-
-COPY --from=builder /app /app
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 WORKDIR /app
-
+COPY --from=build /app/publish .
 COPY docker-entrypoint.sh docker-entrypoint.sh
 
-# Do not run as root user
-#RUN chown -R whateveruser:whateveruser /app
-#USER whateveruser
-
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT false
-ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
-
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
+EXPOSE 80
+EXPOSE 443
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
