@@ -1,7 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 
-RUN git clone -b v2.0.1.3 --depth 1 https://github.com/zkSNACKs/WalletWasabi.git /src
+RUN git clone -b v2.0.1.4 --depth 1 https://github.com/zkSNACKs/WalletWasabi.git /src
 
 WORKDIR /src
 

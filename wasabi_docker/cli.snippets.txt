@@ -64,10 +64,10 @@ curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"s
 
 curl -u wasabi:CHANGEME -s -d '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params":["wasabi"]}' http://wasabi_1:18099/ | jq
 
-# This works 
+# This works
 /proxy # curl -u wasabi:CHANGEME -s -d '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params":["philler"]}' http://wasabi_1:18099/ | jq
 
-# This works 
+# This works
 /proxy # curl -u wasabi:CHANGEME -s -d  '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params": { "walletName":"philler"} }' http://wasabi_1:18099/ | jq
 
 /proxy # curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"philler-1", "password":""} }' http://wasabi_1:18099/ | jq
@@ -132,7 +132,7 @@ cyphernode/dist % docker exec -it 9fbe8fb64edd curl -u wasabi:CHANGEME -s --data
   "result": "test emerge lake easy circle feature ready trophy about submit monitor embody",
   "id": "0"
 }
-cyphernode/dist % docker exec -it 9fbe8fb64edd curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"not-mixed-yet", "password":""} }' http://wasabi_0:18099/ | jq
+cyphernode/dist % docker exec -it 9fbe8fb64edd curl -u wasabi:CHANGEME -s --data-binary  '{"jsonrpc":"2.0","id":"0","method":"createwallet", "params": { "walletName":"wasabi", "password":""} }' http://wasabi_0:18099/ | jq
 {
   "jsonrpc": "2.0",
   "result": "voyage mask party need rude asset label obtain slot panel cannon melody",
@@ -144,4 +144,46 @@ bcrt1qku9qtyutuxndh20jas586jk2zcy08yp24h5xvq
 bcrt1q5yxwqzqut3jhg9agyp8e45gg5nqrv90ytdj5xf
 
 
-curl -u wasabi:CHANGEME -s -d  '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params": { "walletName":"not-mixed-yet"} }' http://wasabi_1:18099/ | jq
+curl -u wasabi:CHANGEME -s -d  '{"jsonrpc":"2.0","id":"0","method":"selectwallet", "params": { "walletName":"wasa"} }' http://wasabi_0:18099/
+
+
+
+TEstnet
+wasabi_0
+{"jsonrpc":"2.0","result":"hammer boost join kiwi dawn manual mansion world hub promote inflict enter","id":"0"}
+/proxy # curl -u wasabi:CHANGEME -s --data-binary '{"jsonrpc":"2.0","id":"0","method":"getnewaddress", "params": { "walletName":"wasabi", "label":"ww2-1"}}' http://wasabi_0:18099
+{"jsonrpc":"2.0","result":{"address":"tb1qjlesgd4hf3lcx9p8pp2qw2vwnr4z4jletnmtma","keyPath":"84'/1'/0'/0/21","label":["ww2-1"],"publicKey":"025fe27066a71bb5151c5465f20e85374222fc3ea2cc67280a36ace17bcdb04325","p2wpkh":"001497f30436b7
+tx=19b644f2c8a3ce8ac73a039ccb84d81c7e8cb93e280182bb1aba2bb8da99e6b3
+Block (2316071)
+
+wasabi_1
+{"jsonrpc":"2.0","result":"toast swallow leisure mercy illegal bid excite worth again harsh little spatial","id":"0"}
+/proxy # curl -u wasabi:CHANGEME -s --data-binary '{"jsonrpc":"2.0","id":"0","method":"getnewaddress", "params": { "walletName":"wasabi", "label":"ww2-1"}}' http://wasabi_1:18099
+{"jsonrpc":"2.0","result":{"address":"tb1qwuttu0ehx0l5yrljg4s0uvs7rpntvmscgm3343","keyPath":"84'/1'/0'/0/21","label":["ww2-1"],"publicKey":"03a73dd54d6ce71c71747b9e821523aac517f460144dd5ab671707cf77749f3256","p2wpkh":"00147716be3f373
+tx=20b54c3b385d633e3f8abbf9d1a55af5505ef756459b81b433ef50c49f379a14
+Block (2316072)
+
+#Start
+curl -u wasabi:CHANGEME -s -d  '{"jsonrpc":"2.0","id":"0","method":"startcoinjoin", "params": { "stopWhenAllMixed":"true", "overridePlebStop":"true", "password":""} }' http://localhost:18099/
+
+
+
+curl --config ${WASABI_RPC_CFG} -s -d "{'jsonrpc':'2.0','id':'0','method':'selectwallet', 'params': { 'walletName':'wasabi' } }" http://localhost:18099/
+
+
+curl --config ${WASABI_RPC_CFG} -s -d "{'jsonrpc':'2.0','id':'0','method':'getwalletinfo', 'params': {} }" http://localhost:18099/
+curl --config ${WASABI_RPC_CFG} -o /dev/null -w "%{http_code}" -s -d "{'jsonrpc':'2.0','id':'0','method':'getwalletinfo', 'params': {} }" http://localhost:18099/
+
+
+curl --config ${WASABI_RPC_CFG} -s -d "{'jsonrpc':'2.0','id':'0','method':'getnewaddress', 'params': {'label':'20220818-1058'} }" http://localhost:18099/
+curl --config ${WASABI_RPC_CFG} -s -d "{'jsonrpc':'2.0','id':'0','method':'listcoins', 'params': {} }" http://localhost:18099/ | jq
+curl --config ${WASABI_RPC_CFG} -s -d "{'jsonrpc':'2.0','id':'0','method':'listunspentcoins', 'params': {} }" http://localhost:18099/ | jq
+curl --config ${WASABI_RPC_CFG} -s -d "{'jsonrpc':'2.0','id':'0','method':'gethistory', 'params': {'label':'20220818-1058'} }" http://localhost:18099/ | jq
+curl --config ${WASABI_RPC_CFG} -s -d "{'jsonrpc':'2.0','id':'0','method':'getstatus', 'params': {'label':'20220818-1058'} }" http://localhost:18099/ | jq
+
+
+curl --config ${WASABI_RPC_CFG} -s --data-binary '{"jsonrpc":"2.0","id":"1","method":"send", "params": { "payments":[ {"sendto": "tb1q2ycgqhm70xqda7cxyqsfrtm9l02yp5duvgswmr", "amount": 50000, "label": "Ya" }], "coins":[{"transactionid":"1f2c05208d9233c6969c62696abfd541932cfe5a1b96a7968360342d308d2605", "index":1}], "feeTarget":2, "password": "" }}' http://localhost:18099/ | jq
+
+
+
+curl -u wasabi:CHANGEME -s -d  '{"jsonrpc":"2.0","id":"0","method":"stopcoinjoin", "params": { "stopWhenAllMixed":"true", "overridePlebStop":"true"} }' http://wasabi_0:18099/

@@ -389,7 +389,7 @@ install_docker() {
     sudo_if_required mkdir -p $current_path/.env
     next
   fi
-  
+
   copy_file $cyphernodeconf_filepath/gatekeeper/default.conf $GATEKEEPER_DATAPATH/default.conf 1 $SUDO_REQUIRED
   copy_file $cyphernodeconf_filepath/gatekeeper/api.properties $GATEKEEPER_DATAPATH/api.properties 1 $SUDO_REQUIRED
   copy_file $cyphernodeconf_filepath/gatekeeper/keys.properties $GATEKEEPER_DATAPATH/keys.properties 1 $SUDO_REQUIRED
@@ -920,7 +920,7 @@ LIGHTNING_VERSION="v0.10.2"
 TRAEFIK_VERSION="v2.6.3"
 MOSQUITTO_VERSION="1.6-openssl"
 POSTGRES_VERSION="14.0-bullseye"
-WASABI_VERSION="v2.0.1.3"
+WASABI_VERSION="v2.0.1.4"
 
 SETUP_DIR=$(dirname $(realpath $0))
 

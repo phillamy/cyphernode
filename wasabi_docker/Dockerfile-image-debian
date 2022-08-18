@@ -1,0 +1,27 @@
+FROM debian:bullseye-slim
+
+ARG WASABI_VERSION="2.0.1.4"
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update && apt-get install -y xvfb xvfb jq curl wget gpg && apt-get clean
+
+RUN wget https://raw.githubusercontent.com/zkSNACKs/WalletWasabi/master/PGP.txt && \
+    gpg --import PGP.txt && \
+    wget https://github.com/zkSNACKs/WalletWasabi/releases/download/v${WASABI_VERSION}/Wasabi-${WASABI_VERSION}.deb && \
+    wget https://github.com/zkSNACKs/WalletWasabi/releases/download/v${WASABI_VERSION}/Wasabi-${WASABI_VERSION}.deb.asc && \
+    gpg --verify Wasabi-${WASABI_VERSION}.deb.asc Wasabi-${WASABI_VERSION}.deb
+
+RUN dpkg -i Wasabi-${WASABI_VERSION}.deb && \
+    rm /Wasabi-${WASABI_VERSION}.deb && \
+    rm /Wasabi-${WASABI_VERSION}.deb.asc && \
+    rm PGP.txt && \
+    apt -y remove wget gpg && \
+    apt -y autoremove
+
+WORKDIR /app
+
+COPY docker-entrypoint.sh docker-entrypoint.sh
+
+#ENTRYPOINT ["/app/entrypoint.sh"]
+
