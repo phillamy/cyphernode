@@ -4,8 +4,8 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 RUN git clone -b master --depth 1 https://github.com/zkSNACKs/WalletWasabi.git /wasabi
 WORKDIR /wasabi
 
-RUN git fetch origin pull/8962/head:MASTER
-RUN git checkout MASTER
+#RUN git fetch origin pull/8962/head:MASTER
+#RUN git checkout MASTER
 
 WORKDIR /wasabi/WalletWasabi.Fluent.Desktop
 #RUN dotnet restore "WalletWasabi.Fluent.Desktop.csproj"
