@@ -1,4 +1,5 @@
 import { ErrorWithReasonCode, IConnackPacket, IPublishPacket, connect } from 'mqtt';
+import { nostrSendDM } from './nostr/sendDM';
 
 export function startMqttClient() {
   console.log(`nostr_client: connecting to MQTT [${process.env.BROKER_URL}]`)
@@ -18,10 +19,10 @@ export function startMqttClient() {
     })
   })
 
-  mqttClient.on('message', (topic: string, payload: Buffer, _packet: IPublishPacket) => {
-
+  mqttClient.on('message', async (topic: string, payload: Buffer, _packet: IPublishPacket) => {
     console.log(`nostr_client: Message topic: ${topic}`)
     console.log(`nostr_client: Message : ${payload}`)
+    await nostrSendDM({ message: `[${topic}] [${payload.toString()}]` })
   })
 
   mqttClient.on('error', (error: Error | ErrorWithReasonCode) => {

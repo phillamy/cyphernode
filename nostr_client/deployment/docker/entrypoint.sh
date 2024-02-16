@@ -1,4 +1,4 @@
 #!/bin/sh
-export DEBUG='ndk:*'
+//export DEBUG='ndk:*'
 
 exec yarn start:dev
