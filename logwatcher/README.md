@@ -25,10 +25,8 @@ docker build -t cyphernode/logwatcher:v0.9.0-dev-local .
 
     volumes:
       - "/cyphernode/dist/cyphernode/logs:/cnlogs"
-    environment:
-      - LOG_FILE=/cnlogs/proxy.log
-      - GREP_PATTERN=error\|bitcoin_node_newtip
-      - TOPIC=cn/logwatcher/proxy
+    env_file:
+      - .env/logwatcher-proxy.env
 
     stop_grace_period: 30s
     networks:
@@ -46,19 +44,32 @@ docker build -t cyphernode/logwatcher:v0.9.0-dev-local .
         delay: 1s
       update_config:
         parallelism: 1
+
 ```
+
+env file:
+```sh
+LOG_FILE=/cnlogs/proxy.log
+GREP_PATTERN=error\|Last return code:
+GREP_EXCLUDE_PATTERN=no error\|"error:null"\|Last return code: 0
+TOPIC=cn/logwatcher/proxy
+```
+
 
 ## Example outputs - logwatcher
 
 ```sh
-Starting log watcher Tue Feb 13 21:09:47 UTC 2024
+Starting log watcher Wed Feb 28 13:43:43 UTC 2024
 Watching file=[/cnlogs/proxy.log]
-Watching pattern=[error\|bitcoin_node_newtip]
+Watching pattern=[error\|Last return code:]
+Watching exclude pattern=[no error\|"error":null\|Last return code: 0]
 Publishing topic=[cn/logwatcher/proxy]
+Waiting for broker to be ready
+\$SYS/broker/versionmosquitto version 1.6.15
+==> mosquitto_pub -h broker -t cn/logwatcher/proxy -m Starting log watcher /cnlogs/proxy.log
 tail: cannot open '/cnlogs/proxy.log' for reading: No such file or directory
 tail: '/cnlogs/proxy.log' has appeared;  following new file
-2024-02-13T21:10:12+00:00 93 Entering bitcoin_node_newtip()...
-2024-02-13T21:10:13+00:00 93 [bitcoin_node_newtip] reconnecting in 60 secs
+...
 ```
 
 ## Example outputs - process subing to topic

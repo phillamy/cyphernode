@@ -1,11 +1,24 @@
-FROM debian:bookworm-slim
-RUN apt update && apt -y install \
-    mosquitto-clients \
- && apt -y autoremove
+FROM alpine:3.19
+RUN apk add --update \
+    mosquitto-clients grep curl
 
-RUN addgroup --system logwatcher \
-    && adduser --system --ingroup logwatcher --disabled-password --uid 999 --home /home/logwatcher logwatcher \
-    && chown -R logwatcher:logwatcher /home/logwatcher
+ENV USER=logwatch
+ENV GROUPNAME=$USER
+ENV UID=1000
+ENV GID=1000
+ENV pwd=/home/logwatcher
+
+RUN addgroup \
+    --gid "$GID" \
+    "$GROUPNAME"
+RUN  adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "$(pwd)" \
+    --ingroup "$GROUPNAME" \
+    --no-create-home \
+    --uid "$UID" \
+    $USER
 
 WORKDIR /home/logwatcher
 
