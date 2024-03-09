@@ -4,16 +4,19 @@
   "license": "MIT",
   "type": "module",
   "devDependencies": {
-    "@types/node": "20.11.17",
-    "typescript": "5.3.3"
+    "@types/async-lock": "^1.4.2",
+    "@types/node": "20.11.25",
+    "typescript": "5.4.2"
   },
   "dependencies": {
-    "@nostr-dev-kit/ndk": "2.4.1",
-    "dotenv": "16.4.4",
-    "mqtt": "5.3.5",
+    "@nostr-dev-kit/ndk": "2.5.0",
+    "async-lock": "1.4.1",
+    "cron":"3.1.6",
+    "dotenv": "16.4.5",
+    "mqtt": "5.3.6",
     "tsx": "4.7.1",
     "websocket-polyfill": "0.0.3"
-    },
+  },
   "scripts": {
     "start": "tsc --noEmit && tsx -r dotenv/config ./src/index.ts",
     "start:dev": "tsc --noEmit && tsx --watch --watch-preserve-output -r dotenv/config ./src/index.ts"

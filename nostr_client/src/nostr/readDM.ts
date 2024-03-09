@@ -1,15 +1,16 @@
 import NDK, { NDKEvent, NDKKind, NDKPrivateKeySigner, NDKRelay } from "@nostr-dev-kit/ndk";
 import "websocket-polyfill";
+import { log } from "..";
 
 // See https://nostrtool.com/
 // See https://www.youtube.com/watch?v=djUS6GvU9pM
 // See https://github.com/nostr-dev-kit/ndk/tree/master
 
 async function nostrReadDM() {
-  console.log(`nostrReadDM: connecting to relays ${process.env.RELAYS}`)
+  log({ msg: `nostrReadDM: connecting to relays ${process.env.RELAYS}` })
 
   const signer = new NDKPrivateKeySigner(`${process.env.PRIVATE_KEY}`)
-  console.log(`nostrReadDM: signer created`)
+  log({ msg: `nostrReadDM: signer created` })
 
   const ndk = new NDK({
     explicitRelayUrls: `${process.env.RELAYS}`.split(','),
@@ -20,13 +21,13 @@ async function nostrReadDM() {
   // Now connect to specified relays
   await ndk.connect(2000);
 
-  console.log(`nostr_client: connected to relays`)
+  log({ msg: `nostr_client: connected to relays` })
 
   const user = ndk.getUser({
     npub: `${process.env.PUBLISHING_TO_NPUBS}`,
   });
 
-  console.log(`nostr_client: user created`)
+  log({ msg: `nostr_client: user created` })
 
   const subscription = ndk.subscribe([
     { // Encrypted DM sent by user
@@ -40,14 +41,14 @@ async function nostrReadDM() {
   subscription.on("event", async (event: NDKEvent) => {
     switch (event.author.pubkey) {
       case user.pubkey:
-        console.log(`Message from user`)
+        log({ msg: `Message from user` })
         try {
           await event.decrypt(user, signer)
-          console.log(`[${event.created_at}] pubkey=${event.author.pubkey} content=${event.content} `);
-          console.log(`---------------------------------------------------`);
+          log({ msg: `[${event.created_at}] pubkey=${event.author.pubkey} content=${event.content} ` });
+          log({ msg: `---------------------------------------------------` });
         }
         catch (e) {
-          console.error(`Could not decrypt : ${e}`)
+          log({ msg: `Could not decrypt : ${e}` })
         }
         break
 
@@ -57,7 +58,7 @@ async function nostrReadDM() {
 
   });
 
-  subscription.on("eose", () => console.log("All relays have reached the end of the event stream"));
-  subscription.on("close", () => console.log("Subscription closed"));
+  subscription.on("eose", () => log({ msg: "All relays have reached the end of the event stream" }));
+  subscription.on("close", () => log({ msg: "Subscription closed" }));
   setTimeout(() => subscription.stop(), 10000); // Stop the subscription after 10 seconds
 }

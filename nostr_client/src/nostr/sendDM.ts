@@ -1,12 +1,14 @@
 import NDK, { NDKEvent, NDKKind, NDKPrivateKeySigner, NDKUser } from "@nostr-dev-kit/ndk";
 import { randomUUID } from "crypto";
 import "websocket-polyfill";
+import { LOCK_KEY, bumpMessageCounter, lock, startCronMsgCounter } from "./cronMsgCounter";
+import { log } from "..";
 
 // See https://nostrtool.com/
 // See https://www.youtube.com/watch?v=djUS6GvU9pM
 // See https://github.com/nostr-dev-kit/ndk/tree/master
 
-// NDK recommends using a singlton
+// NDK recommends using a singleton
 let ndk: NDK
 let signer: NDKPrivateKeySigner
 
@@ -21,10 +23,26 @@ export async function startNostr(): Promise<void> {
 
   // connect to specified relays
   await ndk.connect(2000);
+
+  startCronMsgCounter()
 }
 
 export async function nostrSendDM({ message }: { message: string }) {
-  console.log(`Entering nostrSendDM`)
+  log({ msg: `Entering nostrSendDM ${message}` })
+  let messageCountExceeded = false
+
+  lock.acquire(LOCK_KEY, async () => {
+    const { previousCount, newCount } = bumpMessageCounter({})
+    if (newCount > +process.env.MAX_MESSAGE_PER_CRON_TICK) {
+      log({ msg: `nostrSendDM - Skipping - Message counter ${newCount} is > ${+process.env.MAX_MESSAGE_PER_CRON_TICK}` })
+      messageCountExceeded = true
+    }
+  })
+
+  if (messageCountExceeded) {
+    log({ msg: `nostrSendDM - Not sending` })
+    return
+  }
 
   const userNpubs = `${process.env.PUBLISHING_TO_NPUBS}`.split(',')
 
@@ -36,13 +54,16 @@ export async function nostrSendDM({ message }: { message: string }) {
       })
     }
     catch (e) {
-      console.error(`Error publishing message`)
+      log({ msg: `Error publishing message` })
     }
   }
+
+  return
+
 }
 
 async function publishDM({ message, user }: { message: string, user: NDKUser }) {
-  console.log(`publishDM: [${user.pubkey}] - [${message}]`)
+  log({ msg: `publishDM: [${user.pubkey}] - [${message}]` })
 
   const ndkEvent = new NDKEvent(ndk);
   ndkEvent.kind = NDKKind.EncryptedDirectMessage;
@@ -52,12 +73,12 @@ async function publishDM({ message, user }: { message: string, user: NDKUser }) 
   ndkEvent.generateTags();
 
   await ndkEvent.encrypt(user, signer);
-  //console.log(`nostr_client: encrypting`, ndkEvent);
+  //log(`nostr_client: encrypting`, ndkEvent);
 
   // Relays are calculated by NDK - no relay set specified
   const relaySet = await ndkEvent.publish();
 
   for (const relay of relaySet) {
-    console.log(`Relay status :${relay.status}`);
+    log({ msg: `Relay status :${relay.status}` });
   }
 }
