@@ -51,7 +51,7 @@ env file:
 ```sh
 LOG_FILE=/cnlogs/proxy.log
 GREP_PATTERN=error\|Last return code:
-GREP_EXCLUDE_PATTERN=no error\|"error:null"\|Last return code: 0
+GREP_EXCLUDE_PATTERN=no error\|"error":null\|Last return code: 0
 TOPIC=cn/logwatcher/proxy
 ```
 
