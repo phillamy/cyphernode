@@ -1,5 +1,7 @@
 # Cyphernode Log watcher
 
+Configure a grep pattern and optionnaly a grep exclude pattern.  Logwatcher will return the last 5 log entries related the sme process id that triggered the message
+
 ## Pull our Cyphernode image
 
 ```shell
@@ -59,14 +61,14 @@ TOPIC=cn/logwatcher/proxy
 ## Example outputs - logwatcher
 
 ```sh
-Starting log watcher Wed Feb 28 13:43:43 UTC 2024
-Watching file=[/cnlogs/proxy.log]
-Watching pattern=[error\|Last return code:]
-Watching exclude pattern=[no error\|"error":null\|Last return code: 0]
-Publishing topic=[cn/logwatcher/proxy]
-Waiting for broker to be ready
-\$SYS/broker/versionmosquitto version 1.6.15
-==> mosquitto_pub -h broker -t cn/logwatcher/proxy -m Starting log watcher /cnlogs/proxy.log
+2024-03-19T20:06:06+00:00: Starting log watcher
+2024-03-19T20:06:06+00:00: Watching file=[/cnlogs/proxy.log]
+2024-03-19T20:06:06+00:00: Watching pattern=[error\|Last return code:]
+2024-03-19T20:06:06+00:00: Watching exclude pattern=[no error\|"error":null\|Last return code: 0]
+2024-03-19T20:06:06+00:00: Publishing topic=[cn/logwatcher/proxy]
+2024-03-19T20:06:06+00:00: Waiting for broker to be ready
+$SYS/broker/versionmosquitto version 1.6.15
+==> mosquitto_pub -h broker -t cn/logwatcher/proxy -m 2024-03-19T20:06:07+00:00: Starting log watcher /cnlogs/proxy.log
 tail: cannot open '/cnlogs/proxy.log' for reading: No such file or directory
 tail: '/cnlogs/proxy.log' has appeared;  following new file
 ...
